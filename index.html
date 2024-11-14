@@ -1,16 +1,68 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="utf-8">
-		<title>Game</title>
-		<style>
-			body { margin: 0; }
-		</style>
-	</head>
-	
-	<body>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zombie Chase Game</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #222;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .menu {
+      text-align: center;
+    }
+    .menu h1 {
+      font-size: 2.5em;
+      margin-bottom: 1em;
+    }
+    .menu button {
+      width: 200px;
+      padding: 10px;
+      margin: 10px 0;
+      font-size: 1.2em;
+      cursor: pointer;
+      border: none;
+      border-radius: 5px;
+      color: #fff;
+      background-color: #444;
+      transition: background-color 0.3s;
+    }
+    .menu button:hover {
+      background-color: #666;
+    }
+  </style>
+</head>
+<body>
+  <div class="menu">
+    <h1>Zombie Chase</h1>
+    <button onclick="startGame()">Start Game</button>
+    <button onclick="openSettings()">Settings</button>
+    <button onclick="viewInstructions()">Instructions</button>
+  </div>
 
-		<div id="container"></div>
-		<script type="module" src="/main.js"></script>
-	</body>
+  <script>
+    function startGame() {
+      // Code to start the game
+      window.location.href = "game.html";
+      console.log("Starting game...");
+    }
+    
+    function openSettings() {
+      // Code to open settings
+      console.log("Opening settings...");
+    }
+    
+    function viewInstructions() {
+      // Code to view instructions
+      console.log("Viewing instructions...");
+    }
+  </script>
+</body>
 </html>
