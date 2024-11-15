@@ -199,7 +199,13 @@ function updatePlayer( deltaTime ) {
 	playerCollisions();
 
 	camera.position.copy( playerCollider.end );
-
+	
+	let playerPosition = playerCollider.end.clone();
+	playerPosition.y -= 0.35;
+	// 同步 Adventurer 模型的位移
+	if (playerModel) {
+		playerModel.position.copy(playerPosition);
+	}
 }
 
 
@@ -259,6 +265,168 @@ loader.load('./stone.glb', (gltf2) => {
 
 	}
 });
+
+let playerModel = null;	
+
+// 加载模型和动画
+loader.load('./Adventurer.glb', (gltf) => {
+	const model = gltf.scene;
+	playerModel = model;
+	model.scale.set(0.2, 0.2, 0.2);
+	scene.add(model);
+
+    // 获取所有动画
+    const animations = gltf.animations;
+    const mixer = new THREE.AnimationMixer(model);
+
+    // 你需要找到四个方向的 walk 动画
+    const forwardWalk = animations.find(anim => anim.name === 'CharacterArmature|Run');
+    const backwardWalk = animations.find(anim => anim.name === 'CharacterArmature|Run_Back');
+    const leftWalk = animations.find(anim => anim.name === 'CharacterArmature|Run_Left');
+    const rightWalk = animations.find(anim => anim.name === 'CharacterArmature|Run_Right');
+
+    // 创建动作并播放
+    let currentAction = null;
+    function playWalkAnimation() {
+        // 根据 velocity 判断播放哪个动画
+        if (playerVelocity.length() > 0) {  // 玩家正在移动
+            let direction = getForwardVector().dot(playerVelocity);  // 计算朝向
+
+            // 根据方向决定播放哪个动画
+            if (direction > 0.5) {
+                // 前进
+                if (currentAction !== forwardWalk) {
+                    if (currentAction) currentAction.stop();
+                    currentAction = mixer.clipAction(forwardWalk);
+                    currentAction.play();
+                }
+            } else if (direction < -0.5) {
+                // 后退
+                if (currentAction !== backwardWalk) {
+                    if (currentAction) currentAction.stop();
+                    currentAction = mixer.clipAction(backwardWalk);
+                    currentAction.play();
+                }
+            } else {
+                let sideDirection = getSideVector().dot(playerVelocity);
+                if (sideDirection > 0.5) {
+                    // 右移
+                    if (currentAction !== rightWalk) {
+                        if (currentAction) currentAction.stop();
+                        currentAction = mixer.clipAction(rightWalk);
+                        currentAction.play();
+                    }
+                } else if (sideDirection < -0.5) {
+                    // 左移
+                    if (currentAction !== leftWalk) {
+                        if (currentAction) currentAction.stop();
+                        currentAction = mixer.clipAction(leftWalk);
+                        currentAction.play();
+                    }
+                }
+            }
+        }
+    }
+
+    // 动画更新
+    function animate() {
+        requestAnimationFrame(animate);
+
+        const delta = clock.getDelta();
+        mixer.update(delta);
+        playWalkAnimation();  // 根据方向播放动画
+        renderer.render(scene, camera);
+    }
+
+    animate();
+});
+// // 加载模型和动画
+// loader.load('./Adventurer.glb', (gltf) => {
+//     const model = gltf.scene;
+// 	playerModel = model;
+// 	model.scale.set(0.2, 0.2, 0.2);
+//     scene.add(model);
+	
+//     // 获取所有动画
+//     const animations = gltf.animations;
+//     const mixer = new THREE.AnimationMixer(model);
+// 	animations.forEach((animation, index) => {
+// 		console.log(`动画 ${index + 1}: ${animation.name}`);
+// 	});
+//     // 获取 walk 动画
+//     const walkAnimation = animations.find(anim => anim.name === 'CharacterArmature|Run');
+
+//     // 创建动作并播放
+//     const walkAction = mixer.clipAction(walkAnimation);
+//     walkAction.play();
+
+//     // 动画更新
+//     function animate() {
+//         requestAnimationFrame(animate);
+
+//         const delta = clock.getDelta();
+//         mixer.update(delta);
+
+//         // 旋转模型，使它朝向移动方向
+//         if (playerVelocity.length() > 0) {
+//             // 获取移动方向
+//             const direction = getForwardVector();
+
+//             // 计算人物模型的朝向，确保它面朝移动的方向
+//             const angle = Math.atan2(direction.x, direction.z);
+//             model.rotation.y = angle;  // 旋转模型使它面朝前方
+//         }
+
+//         renderer.render(scene, camera);
+//     }
+
+//     animate();
+// });
+
+// loader.load( './Adventurer.glb', ( gltf ) => {
+// 	const model = gltf.scene;
+//     model.scale.set(0.2, 0.2, 0.2);
+// 	playerModel = model;
+//     // 获取动画数据
+//     const animations = gltf.animations;
+
+//     // 输出所有动画的名称
+//     animations.forEach((animation, index) => {
+//         console.log(`动画 ${index + 1}: ${animation.name}`);
+//     });
+//     // 将模型添加到场景中
+//     scene.add(model);
+
+//     // 创建一个 AnimationMixer 来控制动画
+//     const mixer = new THREE.AnimationMixer(model);
+
+//     // 找到名为 'walk' 的动画并播放
+//     const walkAnimation = animations.find(anim => anim.name === 'CharacterArmature|Walk');
+//     if (walkAnimation) {
+//         mixer.clipAction(walkAnimation).play();
+//     } else {
+//         console.log('没有找到名为 "walk" 的动画');
+//     }
+
+//     // 创建时钟来控制动画更新
+//     const clock = new THREE.Clock();
+
+//     // 动画更新循环
+//     function animate() {
+//         requestAnimationFrame(animate);
+
+//         // 更新动画混合器
+//         const delta = clock.getDelta();
+//         mixer.update(delta); // 更新动画进度
+
+//         // 渲染场景
+//         renderer.render(scene, camera);
+//     }
+
+//     // 启动动画
+//     animate();
+// });
+
 
 
 function playerStoneCollision( stone ) {
@@ -353,7 +521,7 @@ function updateStones( deltaTime ) {
 		stone.velocity.addScaledVector( stone.velocity, damping );
 
 		playerStoneCollision( stone );
-
+		
 	} );
 	
 	StonesCollisions();
