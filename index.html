@@ -63,13 +63,13 @@
       height: 100%;
       background-color: rgba(0, 0, 0, 0.7); /* 半透明黑色背景 */
       z-index: 10;
-      display: flex;
       justify-content: center;
       align-items: center;
     }
 
     /* 弹窗样式 */
     .modal {
+      display: none;
       background-color: #333;
       color: #fff;
       padding: 20px;
@@ -78,7 +78,7 @@
       border-radius: 8px;
       text-align: center;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-	  text-align: left;
+	    text-align: left;
 
       font-family: 'Georgia', sans-serif;  /* 更改为 Arial 字体 */
     }
@@ -142,8 +142,8 @@
     }
 
     function viewInstructions() {
-      // 显示遮罩层和弹窗
       document.getElementById("overlay").style.display = "flex";
+      document.querySelector(".modal").style.display = "block";
     }
 
     function closeInstructions() {

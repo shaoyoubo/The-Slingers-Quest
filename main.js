@@ -11,6 +11,7 @@ import { OctreeHelper } from 'three/addons/helpers/OctreeHelper.js';
 import { Capsule } from 'three/addons/math/Capsule.js';
 
 import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
+import { cameraNear } from 'three/webgpu';
 
 const clock = new THREE.Clock();
 
@@ -75,6 +76,7 @@ const playerCollider = new Capsule( new THREE.Vector3( 0, 0.35, 0 ), new THREE.V
 
 const playerVelocity = new THREE.Vector3();
 const playerDirection = new THREE.Vector3();
+let cameraDistance = 0.14;
 
 let playerOnFloor = false;
 let mouseTime = 0;
@@ -115,6 +117,7 @@ document.body.addEventListener( 'mousemove', ( event ) => {
 
 	if ( document.pointerLockElement === document.body ) {
 
+		
 		camera.rotation.y -= event.movementX / 500;
 		camera.rotation.x -= event.movementY / 500;
 
@@ -136,7 +139,6 @@ let stoneIdx = 0;
 function throwStone() {
 
 	const stone = stones[ stoneIdx ];
-	console.log("good");
 	camera.getWorldDirection( playerDirection );
 
 	stone.collider.center.copy( playerCollider.end ).addScaledVector( playerDirection, playerCollider.radius * 1.5 );
@@ -178,36 +180,6 @@ function playerCollisions() {
 
 }
 
-function updatePlayer( deltaTime ) {
-
-	let damping = Math.exp( - 4 * deltaTime ) - 1;
-
-	if ( ! playerOnFloor ) {
-
-		playerVelocity.y -= GRAVITY * deltaTime;
-
-		// small air resistance
-		damping *= 0.1;
-
-	}
-
-	playerVelocity.addScaledVector( playerVelocity, damping );
-
-	const deltaPosition = playerVelocity.clone().multiplyScalar( deltaTime );
-	playerCollider.translate( deltaPosition );
-
-	playerCollisions();
-
-	camera.position.copy( playerCollider.end );
-	
-	let playerPosition = playerCollider.end.clone();
-	playerPosition.y -= 0.35;
-	// 同步 Adventurer 模型的位移
-	if (playerModel) {
-		playerModel.position.copy(playerPosition);
-	}
-}
-
 
 const loader = new GLTFLoader().setPath( './' );
 
@@ -247,6 +219,9 @@ loader.load( './collision-world.glb', ( gltf ) => {
 		} );
 
 } );
+
+let playerModel = null;	
+
 const stones = [];
 loader.load('./stone.glb', (gltf2) => {
     const stoneModel = gltf2.scene;
@@ -265,9 +240,6 @@ loader.load('./stone.glb', (gltf2) => {
 
 	}
 });
-
-let playerModel = null;	
-
 // 加载模型和动画
 loader.load('./Adventurer.glb', (gltf) => {
 	const model = gltf.scene;
@@ -334,12 +306,48 @@ loader.load('./Adventurer.glb', (gltf) => {
 
         const delta = clock.getDelta();
         mixer.update(delta);
+	    const direction = getForwardVector();
+        const angle = Math.atan2(direction.x, direction.z);
+        model.rotation.y = angle;  // 旋转模型使它面朝前方
         playWalkAnimation();  // 根据方向播放动画
+
         renderer.render(scene, camera);
     }
 
     animate();
 });
+
+
+function updatePlayer( deltaTime ) {
+
+	let damping = Math.exp( - 4 * deltaTime ) - 1;
+
+	if ( ! playerOnFloor ) {
+
+		playerVelocity.y -= GRAVITY * deltaTime;
+
+		// small air resistance
+		damping *= 0.1;
+
+	}
+	getForwardVector();
+	playerVelocity.addScaledVector( playerVelocity, damping );
+
+	const deltaPosition = playerVelocity.clone().multiplyScalar( deltaTime );
+	playerCollider.translate( deltaPosition );
+
+	playerCollisions();
+
+	let playerPosition = playerCollider.end.clone();
+	playerPosition.y -= 0.35;
+	// 同步 Adventurer 模型的位移
+	if (playerModel) {
+		playerModel.position.copy(playerPosition);
+	}
+	camera.position.copy( playerCollider.end.clone().sub((playerDirection.clone()).multiplyScalar(cameraDistance)).clone() );
+	//camera.lookAt(playerCollider.end);
+}
+
 // // 加载模型和动画
 // loader.load('./Adventurer.glb', (gltf) => {
 //     const model = gltf.scene;
@@ -428,6 +436,22 @@ loader.load('./Adventurer.glb', (gltf) => {
 // });
 
 
+
+
+const toggleViewButton = document.getElementById('toggle-view');
+toggleViewButton.addEventListener('click', () => {
+  const currentView = toggleViewButton.getAttribute('data-view'); // 获取当前的视角值
+
+  if (currentView === 'third') {
+	cameraDistance = 0.14;
+    toggleViewButton.setAttribute('data-view', 'first'); // 更新视角状态
+    toggleViewButton.textContent = 'First Person View';
+  } else {
+	cameraDistance = 0.7;
+    toggleViewButton.setAttribute('data-view', 'third'); // 更新视角状态
+    toggleViewButton.textContent = 'Third Person View';
+  }
+});
 
 function playerStoneCollision( stone ) {
 
@@ -543,7 +567,7 @@ function getForwardVector() {
 	return playerDirection;
 
 }
-
+/*
 function getSideVector() {
 
 	camera.getWorldDirection( playerDirection );
@@ -553,7 +577,7 @@ function getSideVector() {
 
 	return playerDirection;
 
-}
+}*/
 
 function controls( deltaTime ) {
 
@@ -574,13 +598,13 @@ function controls( deltaTime ) {
 
 	if ( keyStates[ 'KeyA' ] ) {
 
-		playerVelocity.add( getSideVector().multiplyScalar( - speedDelta ) );
+		//playerVelocity.add( getSideVector().multiplyScalar( - speedDelta ) );
 
 	}
 
 	if ( keyStates[ 'KeyD' ] ) {
 
-		playerVelocity.add( getSideVector().multiplyScalar( speedDelta ) );
+		//playerVelocity.add( getSideVector().multiplyScalar( speedDelta ) );
 
 	}
 
@@ -613,7 +637,7 @@ function teleportPlayerIfOob() {
 
 function animate() {
 
-	const deltaTime = Math.min( 0.05, clock.getDelta() ) / STEPS_PER_FRAME;
+	const deltaTime = Math.min( 0.03, clock.getDelta() ) / STEPS_PER_FRAME;
 
 	// we look for collisions in substeps to mitigate the risk of
 	// an object traversing another too quickly for detection.
