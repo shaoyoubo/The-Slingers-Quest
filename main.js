@@ -15,6 +15,7 @@ import {scene,renderer} from './game/init.js';
 import {player} from './game/player.js';
 import { loadWorldModel } from './game/loadWorld.js';
 import StoneThrower from './game/stone.js';
+import { update } from 'three/examples/jsm/libs/tween.module.js';
 
 const clock = new THREE.Clock();
 
@@ -143,7 +144,7 @@ loader.load('./Characters/Adventurer.glb', (gltf) => {
             let direction = player.getForwardVector().dot(player.velocity);  // 计算朝向
 
             // 根据方向决定播放哪个动画
-            if (direction > 0) {
+            if (direction > 0.1) {
                 // 前进
                 if (currentAction !== forwardWalk) {
                     //if (currentAction) currentAction.stop();
@@ -151,7 +152,7 @@ loader.load('./Characters/Adventurer.glb', (gltf) => {
 					currentAction.timeScale = 4;
                     currentAction.play();
                 }
-            } else if (direction < 0) {
+            } else if (direction < -0.1) {
                 // 后退
                 if (currentAction !== backwardWalk) {
                     //if (currentAction) currentAction.stop();
@@ -160,22 +161,9 @@ loader.load('./Characters/Adventurer.glb', (gltf) => {
                     currentAction.play();
                 }
             } else {
-                let sideDirection = player.getSideVector().dot(player.velocity);
-                if (sideDirection > 0.5) {
-                    // 右移
-                    if (currentAction !== rightWalk) {
-                        if (currentAction) currentAction.stop();
-                        currentAction = mixer.clipAction(rightWalk);
-                        currentAction.play();
-                    }
-                } else if (sideDirection < -0.5) {
-                    // 左移
-                    if (currentAction !== leftWalk) {
-                        if (currentAction) currentAction.stop();
-                        currentAction = mixer.clipAction(leftWalk);
-                        currentAction.play();
-                    }
-                }
+
+			if (currentAction)
+				currentAction.stop();
             }
         }
 		else
@@ -201,6 +189,8 @@ loader.load('./Characters/Adventurer.glb', (gltf) => {
 
     animate();
 });
+
+
 
 
 function updatePlayer( deltaTime ) {
@@ -432,13 +422,13 @@ function controls( deltaTime ) {
 
 	if ( keyStates[ 'KeyA' ] ) {
 
-		//playerVelocity.add( getSideVector().multiplyScalar( - speedDelta ) );
+		player.velocity.add( player.getSideVector().multiplyScalar( - speedDelta ) );
 
 	}
 
 	if ( keyStates[ 'KeyD' ] ) {
 
-		//playerVelocity.add( getSideVector().multiplyScalar( speedDelta ) );
+		player.velocity.add( player.getSideVector().multiplyScalar( speedDelta ) );
 
 	}
 
@@ -468,6 +458,39 @@ function teleportPlayerIfOob() {
 
 }
 
+let maxEnergy = 100; // 能量最大值
+window.currentEnergy = maxEnergy;
+window.energyRecoveryRate = 1; // 每帧恢复的能量值
+window.energyCostPerThrow = 20; 
+function updateStoneCount() {
+	const stoneCountElement = document.getElementById('stone-count');
+	const availableStones = Math.floor(currentEnergy / energyCostPerThrow);
+	stoneCountElement.textContent = availableStones; // 更新数字
+  }
+window.updateEnergyBar = function() {
+	const energyBar = document.getElementById('energy-bar');
+	const energyPercentage = (currentEnergy / maxEnergy) * 100;
+  
+	// 设置能量条宽度
+	energyBar.style.width = `${energyPercentage}%`;
+  
+	// 设置颜色（渐变效果）
+	if (energyPercentage > 50) {
+	  energyBar.style.backgroundColor = "green";
+	} else if (energyPercentage > 20) {
+	  energyBar.style.backgroundColor = "yellow";
+	} else {
+	  energyBar.style.backgroundColor = "red";
+	}
+	updateStoneCount();
+  }
+  
+  window.recoverEnergy = function() {
+	if (currentEnergy < maxEnergy) {
+	  currentEnergy = Math.min(currentEnergy + energyRecoveryRate, maxEnergy);
+	  updateEnergyBar();
+	}
+  }
 
 function animate() {
 
@@ -493,3 +516,5 @@ function animate() {
 	stats.update();
 
 }
+
+setInterval(recoverEnergy, 100);

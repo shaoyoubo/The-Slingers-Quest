@@ -42,6 +42,9 @@ class StoneThrower {
 
     // 投掷石头
     throwStone(mouseTime) {
+        if (window.currentEnergy >= window.energyCostPerThrow) {
+            window.currentEnergy -= window.energyCostPerThrow;
+            window.updateEnergyBar();
         const stone = this.stones[this.stoneIdx];
         
         // 计算投掷方向
@@ -59,6 +62,7 @@ class StoneThrower {
 
         // 更新石头索引
         this.stoneIdx = (this.stoneIdx + 1) % this.stones.length;
+        }
     }
 
     stonesCollisions() {
@@ -89,5 +93,4 @@ class StoneThrower {
         }
     }
 }
-
 export default StoneThrower;
