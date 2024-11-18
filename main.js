@@ -151,7 +151,7 @@ loader.load('./Characters/Adventurer.glb', (gltf) => {
 					currentAction.timeScale = 4;
                     currentAction.play();
                 }
-            } else if (direction < -0) {
+            } else if (direction < 0) {
                 // 后退
                 if (currentAction !== backwardWalk) {
                     //if (currentAction) currentAction.stop();
@@ -376,7 +376,10 @@ function playerStoneCollision( stone ) {
 function updateStones( deltaTime ) {
 
 	stoneThrower.stones.forEach( stone => {
-
+		if ( performance.now() - stone.time > 5000 ) {
+			stone.collider.center.set( 0, - 100, 0 );
+			stone.velocity.set( 0, 0, 0 );
+		}
 		stone.collider.center.addScaledVector( stone.velocity, deltaTime );
 
 		const result = worldOctree.sphereIntersect( stone.collider );

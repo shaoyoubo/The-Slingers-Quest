@@ -16,6 +16,7 @@ class StoneThrower {
         this.stoneIdx = 0;
         this.loader = new GLTFLoader().setPath('../Assets/');
         this.playerModel = null;
+        this.time=-1;
         
         this.loadStones();
     }
@@ -54,6 +55,7 @@ class StoneThrower {
         // 设置石头的速度
         stone.velocity.copy(this.player.direction).multiplyScalar(impulse);
         stone.velocity.addScaledVector(this.player.velocity, 2);
+        stone.time = performance.now();
 
         // 更新石头索引
         this.stoneIdx = (this.stoneIdx + 1) % this.stones.length;
