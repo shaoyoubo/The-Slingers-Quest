@@ -1,4 +1,3 @@
-
 import * as THREE from 'three';
 
 import Stats from 'three/addons/libs/stats.module.js';
@@ -12,44 +11,26 @@ import { Capsule } from 'three/addons/math/Capsule.js';
 
 import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
 import { cameraNear } from 'three/webgpu';
+import {scene,renderer} from './game/init.js';
+import {player} from './game/player.js';
+import { loadWorldModel } from './game/loadWorld.js';
+import StoneThrower from './game/stone.js';
 
 const clock = new THREE.Clock();
 
-const scene = new THREE.Scene();
-scene.background = new THREE.Color( 0x88ccee );
-scene.fog = new THREE.Fog( 0x88ccee, 0, 50 );
+const worldOctree = new Octree();
+loadWorldModel(scene, worldOctree);
+player.updateWorldOctree(worldOctree);
+const stoneThrower = new StoneThrower(scene, player);
 
-const camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 0.1, 1000 );
-camera.rotation.order = 'YXZ';
 
-const fillLight1 = new THREE.HemisphereLight( 0x8dc1de, 0x00668d, 1.5 );
-fillLight1.position.set( 2, 1, 1 );
-scene.add( fillLight1 );
+// const camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 0.1, 1000 );
+// camera.rotation.order = 'YXZ';
 
-const directionalLight = new THREE.DirectionalLight( 0xffffff, 2.5 );
-directionalLight.position.set( - 5, 25, - 1 );
-directionalLight.castShadow = true;
-directionalLight.shadow.camera.near = 0.01;
-directionalLight.shadow.camera.far = 500;
-directionalLight.shadow.camera.right = 30;
-directionalLight.shadow.camera.left = - 30;
-directionalLight.shadow.camera.top	= 30;
-directionalLight.shadow.camera.bottom = - 30;
-directionalLight.shadow.mapSize.width = 1024;
-directionalLight.shadow.mapSize.height = 1024;
-directionalLight.shadow.radius = 4;
-directionalLight.shadow.bias = - 0.00006;
-scene.add( directionalLight );
 
 const container = document.getElementById( 'container' );
 
-const renderer = new THREE.WebGLRenderer( { antialias: true } );
-renderer.setPixelRatio( window.devicePixelRatio );
-renderer.setSize( window.innerWidth, window.innerHeight );
 renderer.setAnimationLoop( animate );
-renderer.shadowMap.enabled = true;
-renderer.shadowMap.type = THREE.VSMShadowMap;
-renderer.toneMapping = THREE.ACESFilmicToneMapping;
 container.appendChild( renderer.domElement );
 
 const stats = new Stats();
@@ -70,15 +51,8 @@ const sphereMaterial = new THREE.MeshLambertMaterial( { color: 0xdede8d } );
 let sphereIdx = 0;
 
 
-const worldOctree = new Octree();
-
-const playerCollider = new Capsule( new THREE.Vector3( 0, 0.35, 0 ), new THREE.Vector3( 0, 1, 0 ), 0.35 );
-
-const playerVelocity = new THREE.Vector3();
-const playerDirection = new THREE.Vector3();
 let cameraDistance = 0.14;
 
-let playerOnFloor = false;
 let mouseTime = 0;
 
 const keyStates = {};
@@ -109,7 +83,7 @@ container.addEventListener( 'mousedown', () => {
 
 document.addEventListener( 'mouseup', () => {
 
-	if ( document.pointerLockElement !== null ) throwStone();
+	if ( document.pointerLockElement !== null ) stoneThrower.throwStone(mouseTime);
 
 } );
 
@@ -118,8 +92,8 @@ document.body.addEventListener( 'mousemove', ( event ) => {
 	if ( document.pointerLockElement === document.body ) {
 
 		
-		camera.rotation.y -= event.movementX / 500;
-		camera.rotation.x -= event.movementY / 500;
+		player.camera.rotation.y -= event.movementX / 500;
+		player.camera.rotation.x -= event.movementY / 500;
 
 	}
 
@@ -129,119 +103,22 @@ window.addEventListener( 'resize', onWindowResize );
 
 function onWindowResize() {
 
-	camera.aspect = window.innerWidth / window.innerHeight;
-	camera.updateProjectionMatrix();
+	player.camera.aspect = window.innerWidth / window.innerHeight;
+	player.camera.updateProjectionMatrix();
 
 	renderer.setSize( window.innerWidth, window.innerHeight );
 
 }
-let stoneIdx = 0;
-function throwStone() {
-
-	const stone = stones[ stoneIdx ];
-	camera.getWorldDirection( playerDirection );
-
-	stone.collider.center.copy( playerCollider.end ).addScaledVector( playerDirection, playerCollider.radius * 1.5 );
-
-	// throw the ball with more force if we hold the button longer, and if we move forward
-
-	const impulse = 15 + 30 * ( 1 - Math.exp( ( mouseTime - performance.now() ) * 0.001 ) );
-
-	stone.velocity.copy( playerDirection ).multiplyScalar( impulse );
-	stone.velocity.addScaledVector( playerVelocity, 2 );
-
-	stoneIdx = ( stoneIdx + 1 ) % stones.length;
-
-}
-
-function playerCollisions() {
-
-	const result = worldOctree.capsuleIntersect( playerCollider );
-
-	playerOnFloor = false;
-
-	if ( result ) {
-
-		playerOnFloor = result.normal.y > 0;
-
-		if ( ! playerOnFloor ) {
-
-			playerVelocity.addScaledVector( result.normal, - result.normal.dot( playerVelocity ) );
-
-		}
-
-		if ( result.depth >= 1e-10 ) {
-
-			playerCollider.translate( result.normal.multiplyScalar( result.depth ) );
-
-		}
-
-	}
-
-}
 
 
-const loader = new GLTFLoader().setPath( './' );
 
-loader.load( './collision-world.glb', ( gltf ) => {
-
-	scene.add( gltf.scene );
-
-	worldOctree.fromGraphNode( gltf.scene );
-
-	gltf.scene.traverse( child => {
-
-		if ( child.isMesh ) {
-
-			child.castShadow = true;
-			child.receiveShadow = true;
-
-			if ( child.material.map ) {
-
-				child.material.map.anisotropy = 4;
-
-			}
-
-		}
-
-	} );
-
-	const helper = new OctreeHelper( worldOctree );
-	helper.visible = false;
-	scene.add( helper );
-
-	const gui = new GUI( { width: 200 } );
-	gui.add( { debug: false }, 'debug' )
-		.onChange( function ( value ) {
-
-			helper.visible = value;
-
-		} );
-
-} );
+const loader = new GLTFLoader().setPath( './Assets/' );
 
 let playerModel = null;	
 
-const stones = [];
-loader.load('./stone.glb', (gltf2) => {
-    const stoneModel = gltf2.scene;
-	for ( let i = 0; i < NUM_SPHERES; i ++ ) {
 
-		const stone = stoneModel.clone();
-		stone.scale.set( 0.4, 0.4, 0.4 );
-		stone.castShadow = true;
-		stone.receiveShadow = true;
-		scene.add( stone );
-		stones.push( {
-			mesh: stone,
-			collider: new THREE.Sphere( new THREE.Vector3( 0, - 100, 0 ), SPHERE_RADIUS ),
-			velocity: new THREE.Vector3()
-		} );
-
-	}
-});
 // 加载模型和动画
-loader.load('./Adventurer.glb', (gltf) => {
+loader.load('./Characters/Adventurer.glb', (gltf) => {
 	const model = gltf.scene;
 	playerModel = model;
 	model.scale.set(0.2, 0.2, 0.2);
@@ -261,8 +138,8 @@ loader.load('./Adventurer.glb', (gltf) => {
     let currentAction = null;
     function playWalkAnimation() {
         // 根据 velocity 判断播放哪个动画
-        if (playerVelocity.length() > 0) {  // 玩家正在移动
-            let direction = getForwardVector().dot(playerVelocity);  // 计算朝向
+        if (player.velocity.length() > 0) {  // 玩家正在移动
+            let direction = player.getForwardVector().dot(player.velocity);  // 计算朝向
 
             // 根据方向决定播放哪个动画
             if (direction > 0.5) {
@@ -280,7 +157,7 @@ loader.load('./Adventurer.glb', (gltf) => {
                     currentAction.play();
                 }
             } else {
-                let sideDirection = getSideVector().dot(playerVelocity);
+                let sideDirection = player.getSideVector().dot(player.velocity);
                 if (sideDirection > 0.5) {
                     // 右移
                     if (currentAction !== rightWalk) {
@@ -306,12 +183,12 @@ loader.load('./Adventurer.glb', (gltf) => {
 
         const delta = clock.getDelta();
         mixer.update(delta);
-	    const direction = getForwardVector();
+	    const direction = player.getForwardVector();
         const angle = Math.atan2(direction.x, direction.z);
         model.rotation.y = angle;  // 旋转模型使它面朝前方
         playWalkAnimation();  // 根据方向播放动画
 
-        renderer.render(scene, camera);
+        renderer.render(scene, player.camera);
     }
 
     animate();
@@ -322,29 +199,29 @@ function updatePlayer( deltaTime ) {
 
 	let damping = Math.exp( - 4 * deltaTime ) - 1;
 
-	if ( ! playerOnFloor ) {
+	if ( ! player.onFloor ) {
 
-		playerVelocity.y -= GRAVITY * deltaTime;
+		player.velocity.y -= GRAVITY * deltaTime;
 
 		// small air resistance
 		damping *= 0.1;
 
 	}
-	getForwardVector();
-	playerVelocity.addScaledVector( playerVelocity, damping );
+	player.getForwardVector();
+	player.velocity.addScaledVector( player.velocity, damping );
 
-	const deltaPosition = playerVelocity.clone().multiplyScalar( deltaTime );
-	playerCollider.translate( deltaPosition );
+	const deltaPosition = player.velocity.clone().multiplyScalar( deltaTime );
+	player.collider.translate( deltaPosition );
 
-	playerCollisions();
+	player.checkCollisionsWithWorld();
 
-	let playerPosition = playerCollider.end.clone();
+	let playerPosition = player.collider.end.clone();
 	playerPosition.y -= 0.35;
 	// 同步 Adventurer 模型的位移
 	if (playerModel) {
 		playerModel.position.copy(playerPosition);
 	}
-	camera.position.copy( playerCollider.end.clone().sub((playerDirection.clone()).multiplyScalar(cameraDistance)).clone() );
+	player.camera.position.copy( player.collider.end.clone().sub((player.direction.clone()).multiplyScalar(cameraDistance)).clone() );
 	//camera.lookAt(playerCollider.end);
 }
 
@@ -455,26 +332,26 @@ toggleViewButton.addEventListener('click', () => {
 
 function playerStoneCollision( stone ) {
 
-	const center = vector1.addVectors( playerCollider.start, playerCollider.end ).multiplyScalar( 0.5 );
+	const center = vector1.addVectors( player.collider.start, player.collider.end ).multiplyScalar( 0.5 );
 
 	const stone_center = stone.collider.center;
 
-	const r = playerCollider.radius + stone.collider.radius;
+	const r = player.collider.radius + stone.collider.radius;
 	const r2 = r * r;
 
 	// approximation: player = 3 spheres
 
-	for ( const point of [ playerCollider.start, playerCollider.end, center ] ) {
+	for ( const point of [ player.collider.start, player.collider.end, center ] ) {
 
 		const d2 = point.distanceToSquared( stone_center );
 
 		if ( d2 < r2 ) {
 
 			const normal = vector1.subVectors( point, stone_center ).normalize();
-			const v1 = vector2.copy( normal ).multiplyScalar( normal.dot( playerVelocity ) );
+			const v1 = vector2.copy( normal ).multiplyScalar( normal.dot( player.velocity ) );
 			const v2 = vector3.copy( normal ).multiplyScalar( normal.dot( stone.velocity ) );
 
-			playerVelocity.add( v2 ).sub( v1 );
+			player.velocity.add( v2 ).sub( v1 );
 			stone.velocity.add( v1 ).sub( v2 );
 
 			const d = ( r - Math.sqrt( d2 ) ) / 2;
@@ -486,45 +363,11 @@ function playerStoneCollision( stone ) {
 
 }
 
-function StonesCollisions() {
 
-	for ( let i = 0, length = stones.length; i < length; i ++ ) {
-
-		const s1 = stones[ i ];
-
-		for ( let j = i + 1; j < length; j ++ ) {
-
-			const s2 = stones[ j ];
-
-			const d2 = s1.collider.center.distanceToSquared( s2.collider.center );
-			const r = s1.collider.radius + s2.collider.radius;
-			const r2 = r * r;
-
-			if ( d2 < r2 ) {
-
-				const normal = vector1.subVectors( s1.collider.center, s2.collider.center ).normalize();
-				const v1 = vector2.copy( normal ).multiplyScalar( normal.dot( s1.velocity ) );
-				const v2 = vector3.copy( normal ).multiplyScalar( normal.dot( s2.velocity ) );
-
-				s1.velocity.add( v2 ).sub( v1 );
-				s2.velocity.add( v1 ).sub( v2 );
-
-				const d = ( r - Math.sqrt( d2 ) ) / 2;
-
-				s1.collider.center.addScaledVector( normal, d );
-				s2.collider.center.addScaledVector( normal, - d );
-
-			}
-
-		}
-
-	}
-
-}
 
 function updateStones( deltaTime ) {
 
-	stones.forEach( stone => {
+	stoneThrower.stones.forEach( stone => {
 
 		stone.collider.center.addScaledVector( stone.velocity, deltaTime );
 
@@ -548,9 +391,9 @@ function updateStones( deltaTime ) {
 		
 	} );
 	
-	StonesCollisions();
+	stoneThrower.stonesCollisions();
 
-	for ( const stone of stones ) {
+	for ( const stone of stoneThrower.stones ) {
 
 		stone.mesh.position.copy( stone.collider.center );
 
@@ -558,41 +401,21 @@ function updateStones( deltaTime ) {
 
 }
 
-function getForwardVector() {
-
-	camera.getWorldDirection( playerDirection );
-	playerDirection.y = 0;
-	playerDirection.normalize();
-
-	return playerDirection;
-
-}
-/*
-function getSideVector() {
-
-	camera.getWorldDirection( playerDirection );
-	playerDirection.y = 0;
-	playerDirection.normalize();
-	playerDirection.cross( camera.up );
-
-	return playerDirection;
-
-}*/
 
 function controls( deltaTime ) {
 
 	// gives a bit of air control
-	const speedDelta = deltaTime * ( playerOnFloor ? 25 : 8 );
+	const speedDelta = deltaTime * ( player.onFloor ? 25 : 8 );
 
 	if ( keyStates[ 'KeyW' ] ) {
 
-		playerVelocity.add( getForwardVector().multiplyScalar( speedDelta ) );
+		player.velocity.add( player.getForwardVector().multiplyScalar( speedDelta ) );
 
 	}
 
 	if ( keyStates[ 'KeyS' ] ) {
 
-		playerVelocity.add( getForwardVector().multiplyScalar( - speedDelta ) );
+		player.velocity.add( player.getForwardVector().multiplyScalar( - speedDelta ) );
 
 	}
 
@@ -608,11 +431,11 @@ function controls( deltaTime ) {
 
 	}
 
-	if ( playerOnFloor ) {
+	if ( player.onFloor ) {
 
 		if ( keyStates[ 'Space' ] ) {
 
-			playerVelocity.y = 15;
+			player.velocity.y = 15;
 
 		}
 
@@ -622,13 +445,13 @@ function controls( deltaTime ) {
 
 function teleportPlayerIfOob() {
 
-	if ( camera.position.y <= - 25 ) {
+	if ( player.camera.position.y <= - 25 ) {
 
-		playerCollider.start.set( 0, 0.35, 0 );
-		playerCollider.end.set( 0, 1, 0 );
-		playerCollider.radius = 0.35;
-		camera.position.copy( playerCollider.end );
-		camera.rotation.set( 0, 0, 0 );
+		player.collider.start.set( 0, 0.35, 0 );
+		player.collider.end.set( 0, 1, 0 );
+		player.collider.radius = 0.35;
+		player.camera.position.copy( player.collider.end );
+		player.camera.rotation.set( 0, 0, 0 );
 
 	}
 
@@ -654,7 +477,7 @@ function animate() {
 
 	}
 
-	renderer.render( scene, camera );
+	renderer.render( scene, player.camera );
 
 	stats.update();
 
