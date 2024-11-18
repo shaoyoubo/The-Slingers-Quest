@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { energyManager } from './ui';
 
 // 假设这些常量是由主文件传入
 const NUM_SPHERES = 100;  // 生成的石头数量
@@ -42,9 +43,9 @@ class StoneThrower {
 
     // 投掷石头
     throwStone(mouseTime) {
-        if (window.currentEnergy >= window.energyCostPerThrow) {
-            window.currentEnergy -= window.energyCostPerThrow;
-            window.updateEnergyBar();
+        if (energyManager.currentEnergy >= energyManager.energyCostPerThrow) {
+            energyManager.currentEnergy -= energyManager.energyCostPerThrow;
+            energyManager.updateEnergyBar();
         const stone = this.stones[this.stoneIdx];
         
         // 计算投掷方向

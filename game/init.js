@@ -31,6 +31,13 @@ renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.VSMShadowMap;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
 
-export { scene, renderer };
+const clock = new THREE.Clock();
+
+let sharedState = {
+    playerModel: null,
+};
+
+export { scene, renderer, clock, sharedState };
+
 
 

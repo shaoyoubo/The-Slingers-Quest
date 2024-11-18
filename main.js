@@ -11,22 +11,18 @@ import { Capsule } from 'three/addons/math/Capsule.js';
 
 import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
 import { cameraNear, select } from 'three/webgpu';
-import {scene,renderer} from './game/init.js';
-import {player} from './game/player.js';
+import {scene,renderer,clock,sharedState} from './game/init.js';
+import {player,loadPlayerModel} from './game/player.js';
 import { loadWorldModel } from './game/loadWorld.js';
 import StoneThrower from './game/stone.js';
 import { update } from 'three/examples/jsm/libs/tween.module.js';
+import {energyManager} from './game/ui.js';
 
-const clock = new THREE.Clock();
 
 const worldOctree = new Octree();
 loadWorldModel(scene, worldOctree);
 player.updateWorldOctree(worldOctree);
 const stoneThrower = new StoneThrower(scene, player);
-
-
-// const camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 0.1, 1000 );
-// camera.rotation.order = 'YXZ';
 
 
 const container = document.getElementById( 'container' );
@@ -112,85 +108,7 @@ function onWindowResize() {
 
 }
 
-
-
-const loader = new GLTFLoader().setPath( './Assets/' );
-
-let playerModel = null;	
-
-
-// 加载模型和动画
-loader.load('./Characters/Adventurer.glb', (gltf) => {
-	const model = gltf.scene;
-	playerModel = model;
-	model.scale.set(0.2, 0.2, 0.2);
-	scene.add(model);
-
-    // 获取所有动画
-    const animations = gltf.animations;
-    const mixer = new THREE.AnimationMixer(model);
-
-    // 你需要找到四个方向的 walk 动画
-    const forwardWalk = animations.find(anim => anim.name === 'CharacterArmature|Run');
-    const backwardWalk = animations.find(anim => anim.name === 'CharacterArmature|Run_Back');
-    const leftWalk = animations.find(anim => anim.name === 'CharacterArmature|Run_Left');
-    const rightWalk = animations.find(anim => anim.name === 'CharacterArmature|Run_Right');
-
-    // 创建动作并播放
-    let currentAction = null;
-    function playWalkAnimation() {
-        // 根据 velocity 判断播放哪个动画
-        if (player.velocity.length() > 0.5) {  // 玩家正在移动
-            let direction = player.getForwardVector().dot(player.velocity);  // 计算朝向
-
-            // 根据方向决定播放哪个动画
-            if (direction > 0.1) {
-                // 前进
-                if (currentAction !== forwardWalk) {
-                    //if (currentAction) currentAction.stop();
-                    currentAction = mixer.clipAction(forwardWalk);
-					currentAction.timeScale = 4;
-                    currentAction.play();
-                }
-            } else if (direction < -0.1) {
-                // 后退
-                if (currentAction !== backwardWalk) {
-                    //if (currentAction) currentAction.stop();
-                    currentAction = mixer.clipAction(backwardWalk);
-					currentAction.timeScale = 4;
-                    currentAction.play();
-                }
-            } else {
-
-			if (currentAction)
-				currentAction.stop();
-            }
-        }
-		else
-		{
-			if (currentAction)
-			currentAction.stop();
-		}
-    }
-
-    // 动画更新
-    function animate() {
-        requestAnimationFrame(animate);
-
-        const delta = clock.getDelta();
-        mixer.update(delta);
-	    const direction = player.getForwardVector();
-        const angle = Math.atan2(direction.x, direction.z);
-        model.rotation.y = angle;  // 旋转模型使它面朝前方
-        playWalkAnimation();  // 根据方向播放动画
-
-        renderer.render(scene, player.camera);
-    }
-
-    animate();
-});
-
-
+loadPlayerModel();
 
 
 function updatePlayer( deltaTime ) {
@@ -216,100 +134,12 @@ function updatePlayer( deltaTime ) {
 	let playerPosition = player.collider.end.clone();
 	playerPosition.y -= 0.35;
 	// 同步 Adventurer 模型的位移
-	if (playerModel) {
-		playerModel.position.copy(playerPosition);
+	if (sharedState.playerModel) {
+		sharedState.playerModel.position.copy(playerPosition);
 	}
 	player.camera.position.copy( player.collider.end.clone().sub((player.direction.clone()).multiplyScalar(cameraDistance)).clone() );
 	//camera.lookAt(playerCollider.end);
 }
-
-// // 加载模型和动画
-// loader.load('./Adventurer.glb', (gltf) => {
-//     const model = gltf.scene;
-// 	playerModel = model;
-// 	model.scale.set(0.2, 0.2, 0.2);
-//     scene.add(model);
-	
-//     // 获取所有动画
-//     const animations = gltf.animations;
-//     const mixer = new THREE.AnimationMixer(model);
-// 	animations.forEach((animation, index) => {
-// 		console.log(`动画 ${index + 1}: ${animation.name}`);
-// 	});
-//     // 获取 walk 动画
-//     const walkAnimation = animations.find(anim => anim.name === 'CharacterArmature|Run');
-
-//     // 创建动作并播放
-//     const walkAction = mixer.clipAction(walkAnimation);
-//     walkAction.play();
-
-//     // 动画更新
-//     function animate() {
-//         requestAnimationFrame(animate);
-
-//         const delta = clock.getDelta();
-//         mixer.update(delta);
-
-//         // 旋转模型，使它朝向移动方向
-//         if (playerVelocity.length() > 0) {
-//             // 获取移动方向
-//             const direction = getForwardVector();
-
-//             // 计算人物模型的朝向，确保它面朝移动的方向
-//             const angle = Math.atan2(direction.x, direction.z);
-//             model.rotation.y = angle;  // 旋转模型使它面朝前方
-//         }
-
-//         renderer.render(scene, camera);
-//     }
-
-//     animate();
-// });
-
-// loader.load( './Adventurer.glb', ( gltf ) => {
-// 	const model = gltf.scene;
-//     model.scale.set(0.2, 0.2, 0.2);
-// 	playerModel = model;
-//     // 获取动画数据
-//     const animations = gltf.animations;
-
-//     // 输出所有动画的名称
-//     animations.forEach((animation, index) => {
-//         console.log(`动画 ${index + 1}: ${animation.name}`);
-//     });
-//     // 将模型添加到场景中
-//     scene.add(model);
-
-//     // 创建一个 AnimationMixer 来控制动画
-//     const mixer = new THREE.AnimationMixer(model);
-
-//     // 找到名为 'walk' 的动画并播放
-//     const walkAnimation = animations.find(anim => anim.name === 'CharacterArmature|Walk');
-//     if (walkAnimation) {
-//         mixer.clipAction(walkAnimation).play();
-//     } else {
-//         console.log('没有找到名为 "walk" 的动画');
-//     }
-
-//     // 创建时钟来控制动画更新
-//     const clock = new THREE.Clock();
-
-//     // 动画更新循环
-//     function animate() {
-//         requestAnimationFrame(animate);
-
-//         // 更新动画混合器
-//         const delta = clock.getDelta();
-//         mixer.update(delta); // 更新动画进度
-
-//         // 渲染场景
-//         renderer.render(scene, camera);
-//     }
-
-//     // 启动动画
-//     animate();
-// });
-
 
 
 
@@ -458,40 +288,6 @@ function teleportPlayerIfOob() {
 
 }
 
-let maxEnergy = 100; // 能量最大值
-window.currentEnergy = maxEnergy;
-window.energyRecoveryRate = 1; // 每帧恢复的能量值
-window.energyCostPerThrow = 20; 
-function updateStoneCount() {
-	const stoneCountElement = document.getElementById('stone-count');
-	const availableStones = Math.floor(currentEnergy / energyCostPerThrow);
-	stoneCountElement.textContent = availableStones; // 更新数字
-  }
-window.updateEnergyBar = function() {
-	const energyBar = document.getElementById('energy-bar');
-	const energyPercentage = (currentEnergy / maxEnergy) * 100;
-  
-	// 设置能量条宽度
-	energyBar.style.width = `${energyPercentage}%`;
-  
-	// 设置颜色（渐变效果）
-	if (energyPercentage > 50) {
-	  energyBar.style.backgroundColor = "green";
-	} else if (energyPercentage > 20) {
-	  energyBar.style.backgroundColor = "yellow";
-	} else {
-	  energyBar.style.backgroundColor = "red";
-	}
-	updateStoneCount();
-  }
-  
-  window.recoverEnergy = function() {
-	if (currentEnergy < maxEnergy) {
-	  currentEnergy = Math.min(currentEnergy + energyRecoveryRate, maxEnergy);
-	  updateEnergyBar();
-	}
-  }
-
 function animate() {
 
 	const deltaTime = Math.min( 0.03, clock.getDelta() ) / STEPS_PER_FRAME;
@@ -517,4 +313,11 @@ function animate() {
 
 }
 
-setInterval(recoverEnergy, 100);
+window.onload = () => {
+    energyManager.init('energy-bar', 'stone-count');
+
+    // 模拟能量恢复的循环
+    setInterval(() => {
+        energyManager.recoverEnergy();
+    }, 100); // 每 100ms 恢复能量
+};
