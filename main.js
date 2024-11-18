@@ -143,7 +143,7 @@ loader.load('./Characters/Adventurer.glb', (gltf) => {
             let direction = player.getForwardVector().dot(player.velocity);  // 计算朝向
 
             // 根据方向决定播放哪个动画
-            if (direction > 0.5) {
+            if (direction > 0) {
                 // 前进
                 if (currentAction !== forwardWalk) {
                     //if (currentAction) currentAction.stop();
@@ -151,7 +151,7 @@ loader.load('./Characters/Adventurer.glb', (gltf) => {
 					currentAction.timeScale = 4;
                     currentAction.play();
                 }
-            } else if (direction < -0.5) {
+            } else if (direction < -0) {
                 // 后退
                 if (currentAction !== backwardWalk) {
                     //if (currentAction) currentAction.stop();
