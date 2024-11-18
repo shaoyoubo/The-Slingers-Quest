@@ -92,9 +92,10 @@ document.body.addEventListener( 'mousemove', ( event ) => {
 	if ( document.pointerLockElement === document.body ) {
 
 		
-		player.camera.rotation.y -= event.movementX / 500;
-		player.camera.rotation.x -= event.movementY / 500;
-
+		if(player.camera.rotation.x- event.movementY / 500 < Math.PI/3 && player.camera.rotation.x- event.movementY / 500 > -Math.PI/3)
+			player.camera.rotation.y -= event.movementX / 500;
+			if(player.camera.rotation.x- event.movementY / 500 < Math.PI/3 && player.camera.rotation.x- event.movementY / 500 > -Math.PI/3)
+			player.camera.rotation.x -= event.movementY / 500;
 	}
 
 } );
@@ -147,6 +148,7 @@ loader.load('./Characters/Adventurer.glb', (gltf) => {
                 if (currentAction !== forwardWalk) {
                     //if (currentAction) currentAction.stop();
                     currentAction = mixer.clipAction(forwardWalk);
+					currentAction.timeScale = 4;
                     currentAction.play();
                 }
             } else if (direction < -0.5) {
@@ -154,6 +156,7 @@ loader.load('./Characters/Adventurer.glb', (gltf) => {
                 if (currentAction !== backwardWalk) {
                     //if (currentAction) currentAction.stop();
                     currentAction = mixer.clipAction(backwardWalk);
+					currentAction.timeScale = 4;
                     currentAction.play();
                 }
             } else {
@@ -177,6 +180,7 @@ loader.load('./Characters/Adventurer.glb', (gltf) => {
         }
 		else
 		{
+			if (currentAction)
 			currentAction.stop();
 		}
     }

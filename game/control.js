@@ -32,11 +32,10 @@ document.addEventListener( 'mouseup', () => {
 document.body.addEventListener( 'mousemove', ( event ) => {
 
 	if ( document.pointerLockElement === document.body ) {
-
-		
+		if(player.camera.rotation.x- event.movementY / 500 < Math.PI/3 && player.camera.rotation.x- event.movementY / 500 > -Math.PI/3)
 		player.camera.rotation.y -= event.movementX / 500;
+		if(player.camera.rotation.x- event.movementY / 500 < Math.PI/3 && player.camera.rotation.x- event.movementY / 500 > -Math.PI/3)
 		player.camera.rotation.x -= event.movementY / 500;
-
 	}
 
 } );
