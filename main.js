@@ -10,7 +10,7 @@ import { OctreeHelper } from 'three/addons/helpers/OctreeHelper.js';
 import { Capsule } from 'three/addons/math/Capsule.js';
 
 import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
-import { cameraNear } from 'three/webgpu';
+import { cameraNear, select } from 'three/webgpu';
 import {scene,renderer} from './game/init.js';
 import {player} from './game/player.js';
 import { loadWorldModel } from './game/loadWorld.js';
@@ -138,21 +138,21 @@ loader.load('./Characters/Adventurer.glb', (gltf) => {
     let currentAction = null;
     function playWalkAnimation() {
         // 根据 velocity 判断播放哪个动画
-        if (player.velocity.length() > 0) {  // 玩家正在移动
+        if (player.velocity.length() > 0.5) {  // 玩家正在移动
             let direction = player.getForwardVector().dot(player.velocity);  // 计算朝向
 
             // 根据方向决定播放哪个动画
             if (direction > 0.5) {
                 // 前进
                 if (currentAction !== forwardWalk) {
-                    if (currentAction) currentAction.stop();
+                    //if (currentAction) currentAction.stop();
                     currentAction = mixer.clipAction(forwardWalk);
                     currentAction.play();
                 }
             } else if (direction < -0.5) {
                 // 后退
                 if (currentAction !== backwardWalk) {
-                    if (currentAction) currentAction.stop();
+                    //if (currentAction) currentAction.stop();
                     currentAction = mixer.clipAction(backwardWalk);
                     currentAction.play();
                 }
@@ -175,6 +175,10 @@ loader.load('./Characters/Adventurer.glb', (gltf) => {
                 }
             }
         }
+		else
+		{
+			currentAction.stop();
+		}
     }
 
     // 动画更新
