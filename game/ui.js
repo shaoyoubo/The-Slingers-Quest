@@ -1,3 +1,4 @@
+import { sharedState } from "./init";
 class EnergyManager {
     constructor(maxEnergy, energyRecoveryRate, energyCostPerThrow) {
         this.maxEnergy = maxEnergy; // 能量最大值
@@ -56,3 +57,24 @@ class EnergyManager {
     }
 }
 export const energyManager = new EnergyManager(100, 1, 20);
+
+function initializeViewToggle() {
+    const toggleViewButton = document.getElementById('toggle-view');
+
+    toggleViewButton.addEventListener('click', () => {
+        const currentView = toggleViewButton.getAttribute('data-view'); // 获取当前视角值
+
+        if (currentView === 'third') {
+            sharedState.cameraDistance = 0.14;
+            toggleViewButton.setAttribute('data-view', 'first'); // 更新视角状态
+            toggleViewButton.textContent = 'First Person View';
+        } else {
+            sharedState.cameraDistance = 0.7;
+            toggleViewButton.setAttribute('data-view', 'third'); // 更新视角状态
+            toggleViewButton.textContent = 'Third Person View';
+        }
+
+    });
+}
+
+export {initializeViewToggle};

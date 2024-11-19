@@ -21,7 +21,12 @@ class StoneThrower {
         
         this.loadStones();
     }
-
+    updateScene(scene) {
+        this.scene = scene;
+    }
+    updatePlayer(player) {
+        this.player = player;
+    }
     // 加载石头模型
     loadStones() {
         this.loader.load('./Environment/stone.glb', (gltf2) => {
@@ -94,4 +99,4 @@ class StoneThrower {
         }
     }
 }
-export default StoneThrower;
+export const stoneThrower = new StoneThrower();

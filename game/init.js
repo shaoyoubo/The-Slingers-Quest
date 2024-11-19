@@ -35,6 +35,7 @@ const clock = new THREE.Clock();
 
 let sharedState = {
     playerModel: null,
+    cameraDistance : 0.14,
 };
 
 export { scene, renderer, clock, sharedState };

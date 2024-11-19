@@ -5,8 +5,8 @@ import { scene, renderer, clock ,sharedState} from './init.js';
 
 
 class Player {
-    constructor(worldOctree) {
-        this.worldOctree = worldOctree;
+    constructor() {
+        this.worldOctree = null;
 
         // 定义玩家的碰撞体、速度、方向等属性
         this.collider = new Capsule(new THREE.Vector3(0, 0.35, 0), new THREE.Vector3(0, 1, 0), 0.35);
@@ -18,6 +18,9 @@ class Player {
     }
     updateWorldOctree(worldOctree) {
         this.worldOctree = worldOctree;
+    }
+    updateOnFloor(onFloor) {
+        this.onFloor = onFloor;
     }
     /**
      * 检测玩家与世界的碰撞并处理结果
@@ -70,8 +73,6 @@ class Player {
     
     }
 }
-
-export default Player;
 
 export const player = new Player();
 
