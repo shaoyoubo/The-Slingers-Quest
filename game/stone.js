@@ -16,7 +16,6 @@ class StoneThrower {
         this.stones = [];
         this.stoneIdx = 0;
         this.loader = new GLTFLoader().setPath('../Assets/');
-        this.playerModel = null;
         this.time=-1;
         
         this.loadStones();

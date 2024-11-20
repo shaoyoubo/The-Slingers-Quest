@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import {clock, sharedState } from './init.js'; // 时钟和共享状态
 import { inputManager } from './InputManager.js'; // 键盘输入管理器
 import { stoneThrower } from './stone.js'; // 投石功能
+import { zombiesGenerator } from './enemy.js'; // 生成僵尸
 const GRAVITY = 30;
 const STEPS_PER_FRAME = 5;
 const vector1 = new THREE.Vector3();
@@ -9,10 +10,7 @@ const vector2 = new THREE.Vector3();
 const vector3 = new THREE.Vector3();
 
 export function controls(deltaTime, player) {
-    if (!player || typeof player.onFloor === "undefined") {
-        console.error("Player is not properly initialized.");
-        return;
-    }
+    
     const speedDelta = deltaTime * (player.onFloor ? 25 : 8);
 
     if (inputManager.keyStates['KeyW']) {
@@ -38,10 +36,7 @@ export function controls(deltaTime, player) {
 
 export function updatePlayer(deltaTime, player, cameraDistance) {
     let damping = Math.exp(-4 * deltaTime) - 1;
-    if (!player||typeof player.onFloor === "undefined") {
-        console.error("Player is not properly initialized in the updatePlayer.");
-        return;
-    }
+    
     if (!player.onFloor) {
         player.velocity.y -= GRAVITY * deltaTime;
         damping *= 0.1;
@@ -82,7 +77,9 @@ export function updateStones(deltaTime, player) {
             stone.velocity.addScaledVector(result.normal, -result.normal.dot(stone.velocity) * 1.5);
             stone.collider.center.add(result.normal.multiplyScalar(result.depth));
         } else {
-            stone.velocity.y -= GRAVITY * deltaTime;
+            if (stone.collider.center.y > -25) {
+                stone.velocity.y -= GRAVITY * deltaTime;
+            }
         }
 
         const damping = Math.exp(-1.5 * deltaTime) - 1;
@@ -131,17 +128,57 @@ export function teleportPlayerIfOob(player) {
     }
 }
 
-export function animate(renderer, scene, player, stats, cameraDistance) {
-    if (!player||typeof player.onFloor === "undefined") {
-        console.error("Player is not properly initialized in the animate.");
-        return;
+function updateZombies(deltaTime, player) {
+    for (const zombie of zombiesGenerator.zombies) {
+        console.log(zombiesGenerator.zombieIdx);
+        console.log(zombie.collider.start);
+        zombie.collider.start.addScaledVector(zombie.velocity, deltaTime);
+        zombie.collider.end.addScaledVector(zombie.velocity, deltaTime);
+
+        const result = player.worldOctree.capsuleIntersect(zombie.collider);
+
+        if (result) {
+            zombie.velocity.addScaledVector(result.normal, -result.normal.dot(zombie.velocity) * 1.5);
+            zombie.collider.start.add(result.normal.multiplyScalar(result.depth));
+            zombie.collider.end.add(result.normal.multiplyScalar(result.depth));
+        } else {
+            if (zombie.collider.start.y > -25) {
+                zombie.velocity.y -= GRAVITY * deltaTime;
+            }
+        }
+
+        const damping = Math.exp(-1.5 * deltaTime) - 1;
+        zombie.velocity.addScaledVector(zombie.velocity, damping);
     }
+
+    for (const zombie of zombiesGenerator.zombies) {
+        zombie.mesh.position.copy(zombie.collider.start);
+        console.log("copy position");
+    }
+}
+
+
+let lastZombieGenerationTime = 0;
+const generationInterval = 1000;
+
+export function animate(renderer, scene, player, stats, cameraDistance) {
+    const now = performance.now();
+    console.log(now);
+    if (!sharedState.initZombiesGenerator) {
+        console.warn("ZombieGenerator not initialized yet.");
+        return; // 或者在下一帧重新调用 animate
+    }    
     const deltaTime = Math.min(0.03, clock.getDelta()) / STEPS_PER_FRAME;
 
     for (let i = 0; i < STEPS_PER_FRAME; i++) {
+        if (now - lastZombieGenerationTime > generationInterval) {
+            zombiesGenerator.generateZombie();
+            lastZombieGenerationTime = now;
+        }
         controls(deltaTime, player);
         updatePlayer(deltaTime, player, cameraDistance);
         updateStones(deltaTime, player);
+        updateZombies(deltaTime, player);
         teleportPlayerIfOob(player);
     }
 

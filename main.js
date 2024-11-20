@@ -19,6 +19,7 @@ import { update } from 'three/examples/jsm/libs/tween.module.js';
 import {energyManager,initializeViewToggle} from './game/ui.js';
 import { inputManager } from './game/InputManager.js';
 import { animate } from './game/control.js';
+import { zombiesGenerator } from './game/enemy.js';
 
 
 const worldOctree = new Octree();
@@ -27,6 +28,16 @@ player.updateWorldOctree(worldOctree);
 player.updateOnFloor(false);
 stoneThrower.updateScene(scene);
 stoneThrower.updatePlayer(player);
+const checkInitialization = setInterval(() => {
+    if (sharedState.initZombiesGenerator) {
+        console.log("ZombieGenerator initialized.");
+        clearInterval(checkInitialization); // 停止检查
+        zombiesGenerator.updateScene(scene); // 调用更新场景方法
+    } else {
+        console.warn("ZombieGenerator not initialized yet.");
+    }
+}, 100); // 每100毫秒检查一次
+
 
 const container = document.getElementById( 'container' );
 inputManager.init(player, stoneThrower, container, renderer);
@@ -54,10 +65,7 @@ loadPlayerModel();
 initializeViewToggle();
 
 function gameLoop() {
-	if (!player||typeof player.onFloor === "undefined") {
-        console.error("Player is not properly initialized in the main loop.");
-        return;
-    }
+	
     animate(renderer, scene, player, stats, sharedState.cameraDistance);
 }
 renderer.setAnimationLoop( gameLoop );
@@ -65,9 +73,10 @@ renderer.setAnimationLoop( gameLoop );
 
 window.onload = () => {
     energyManager.init('energy-bar', 'stone-count');
-
     // 模拟能量恢复的循环
     setInterval(() => {
         energyManager.recoverEnergy();
     }, 100); // 每 100ms 恢复能量
 };
+
+
