@@ -36,7 +36,6 @@ const clock = new THREE.Clock();
 let sharedState = {
     playerModel: null,
     cameraDistance : 0.14,
-    initZombiesGenerator: false,
     gltfCharactorDict: {},
     gltfEnvironmentDict: {},
 };

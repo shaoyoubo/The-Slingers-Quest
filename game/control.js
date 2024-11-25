@@ -129,38 +129,36 @@ export function teleportPlayerIfOob(player) {
     }
 }
 
+
 function updateZombies(deltaTime, player) {
     for (const zombie of zombiesGenerator.zombies) {
         // console.log(zombiesGenerator.zombieIdx);
         // console.log(zombie.collider.start);
-        zombie.collider.start.addScaledVector(zombie.velocity, deltaTime);
-        zombie.collider.end.addScaledVector(zombie.velocity, deltaTime);
+        zombie.collider.center.addScaledVector(zombie.velocity, deltaTime);
 
-        const result = player.worldOctree.capsuleIntersect(zombie.collider);
+        const result = player.worldOctree.sphereIntersect(zombie.collider);
 
         if (result) {
             zombie.velocity.addScaledVector(result.normal, -result.normal.dot(zombie.velocity) * 1.5);
-            zombie.collider.start.add(result.normal.multiplyScalar(result.depth));
-            zombie.collider.end.add(result.normal.multiplyScalar(result.depth));
+            zombie.collider.center.add(result.normal.multiplyScalar(result.depth));
         } else {
-            if (zombie.collider.start.y > -25) {
+            if (zombie.collider.center.y > -25) {
                 zombie.velocity.y -= GRAVITY * deltaTime;
             }
         }
 
         const damping = Math.exp(-1.5 * deltaTime) - 1;
         zombie.velocity.addScaledVector(zombie.velocity, damping);
-        const directionToPlayer = new THREE.Vector3().subVectors(player.collider.start, zombie.collider.start);
+        const directionToPlayer = new THREE.Vector3().subVectors(player.collider.start, zombie.collider.center);
         directionToPlayer.y = 0;
         directionToPlayer.normalize();
         zombie.velocity.add(directionToPlayer.multiplyScalar(Zombie_Speed));
+        zombie.mesh.position.copy(zombie.collider.center);
+        zombie.mesh.rotation.y = Math.atan2(directionToPlayer.x, directionToPlayer.z)+Math.PI*0.75;        
+        
     }
 
-    for (const zombie of zombiesGenerator.zombies) {
-        zombie.mesh.position.copy(zombie.collider.start);
-        // console.log(zombie.mesh.position);
-    }
-    
+    zombiesGenerator.ZombiesCollision();
 }
 
 
@@ -169,11 +167,7 @@ const generationInterval = 1000;
 
 export function animate(renderer, scene, player, stats, cameraDistance) {
     const now = performance.now();
-    // console.log(now);
-    // if (!sharedState.initZombiesGenerator) {
-    //     console.warn("ZombieGenerator not initialized yet.");
-    //     return; // 或者在下一帧重新调用 animate
-    // }    
+
     const deltaTime = Math.min(0.03, clock.getDelta()) / STEPS_PER_FRAME;
 
     for (let i = 0; i < STEPS_PER_FRAME; i++) {
