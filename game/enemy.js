@@ -3,7 +3,7 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { Capsule } from 'three/addons/math/Capsule.js';
 import { sharedState } from './init';
 
-const NUM_ZOMBIES = 2;
+const NUM_ZOMBIES = 20;
 class ZombiesGenerator{
     constructor(){
         this.zombies = [];

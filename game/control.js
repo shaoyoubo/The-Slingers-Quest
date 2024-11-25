@@ -5,6 +5,7 @@ import { stoneThrower } from './loadClasses.js'; // 投石功能
 import { zombiesGenerator } from './loadClasses.js'; // 生成僵尸
 const GRAVITY = 30;
 const STEPS_PER_FRAME = 5;
+const Zombie_Speed = 0.01;
 const vector1 = new THREE.Vector3();
 const vector2 = new THREE.Vector3();
 const vector3 = new THREE.Vector3();
@@ -149,12 +150,17 @@ function updateZombies(deltaTime, player) {
 
         const damping = Math.exp(-1.5 * deltaTime) - 1;
         zombie.velocity.addScaledVector(zombie.velocity, damping);
+        const directionToPlayer = new THREE.Vector3().subVectors(player.collider.start, zombie.collider.start);
+        directionToPlayer.y = 0;
+        directionToPlayer.normalize();
+        zombie.velocity.add(directionToPlayer.multiplyScalar(Zombie_Speed));
     }
 
     for (const zombie of zombiesGenerator.zombies) {
         zombie.mesh.position.copy(zombie.collider.start);
         // console.log(zombie.mesh.position);
     }
+    
 }
 
 
