@@ -1,8 +1,8 @@
 import * as THREE from 'three';
 import {clock, sharedState } from './init.js'; // 时钟和共享状态
 import { inputManager } from './InputManager.js'; // 键盘输入管理器
-import { stoneThrower } from './stone.js'; // 投石功能
-import { zombiesGenerator } from './enemy.js'; // 生成僵尸
+import { stoneThrower } from './loadClasses.js'; // 投石功能
+import { zombiesGenerator } from './loadClasses.js'; // 生成僵尸
 const GRAVITY = 30;
 const STEPS_PER_FRAME = 5;
 const vector1 = new THREE.Vector3();
@@ -130,8 +130,8 @@ export function teleportPlayerIfOob(player) {
 
 function updateZombies(deltaTime, player) {
     for (const zombie of zombiesGenerator.zombies) {
-        console.log(zombiesGenerator.zombieIdx);
-        console.log(zombie.collider.start);
+        // console.log(zombiesGenerator.zombieIdx);
+        // console.log(zombie.collider.start);
         zombie.collider.start.addScaledVector(zombie.velocity, deltaTime);
         zombie.collider.end.addScaledVector(zombie.velocity, deltaTime);
 
@@ -153,7 +153,7 @@ function updateZombies(deltaTime, player) {
 
     for (const zombie of zombiesGenerator.zombies) {
         zombie.mesh.position.copy(zombie.collider.start);
-        console.log("copy position");
+        // console.log(zombie.mesh.position);
     }
 }
 
@@ -163,11 +163,11 @@ const generationInterval = 1000;
 
 export function animate(renderer, scene, player, stats, cameraDistance) {
     const now = performance.now();
-    console.log(now);
-    if (!sharedState.initZombiesGenerator) {
-        console.warn("ZombieGenerator not initialized yet.");
-        return; // 或者在下一帧重新调用 animate
-    }    
+    // console.log(now);
+    // if (!sharedState.initZombiesGenerator) {
+    //     console.warn("ZombieGenerator not initialized yet.");
+    //     return; // 或者在下一帧重新调用 animate
+    // }    
     const deltaTime = Math.min(0.03, clock.getDelta()) / STEPS_PER_FRAME;
 
     for (let i = 0; i < STEPS_PER_FRAME; i++) {

@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { energyManager } from './ui';
+import { sharedState } from './init';
 
 // 假设这些常量是由主文件传入
 const NUM_SPHERES = 100;  // 生成的石头数量
@@ -17,32 +18,30 @@ class StoneThrower {
         this.stoneIdx = 0;
         this.loader = new GLTFLoader().setPath('../Assets/');
         this.time=-1;
-        
-        this.loadStones();
     }
     updateScene(scene) {
         this.scene = scene;
+        this.loadStones();
     }
     updatePlayer(player) {
         this.player = player;
     }
     // 加载石头模型
     loadStones() {
-        this.loader.load('./Environment/stone.glb', (gltf2) => {
-            const stoneModel = gltf2.scene;
-            for (let i = 0; i < NUM_SPHERES; i++) {
-                const stone = stoneModel.clone();
-                stone.scale.set(0.4, 0.4, 0.4);
-                stone.castShadow = true;
-                stone.receiveShadow = true;
-                this.scene.add(stone);
-                this.stones.push({
-                    mesh: stone,
-                    collider: new THREE.Sphere(new THREE.Vector3(0, -100, 0), SPHERE_RADIUS),
-                    velocity: new THREE.Vector3(),
-                });
-            }
-        });
+        console.log(sharedState.gltfEnvironmentDict['stone']);
+        const stoneModel = sharedState.gltfEnvironmentDict['stone'].scene;
+        for (let i = 0; i < NUM_SPHERES; i++) {
+            const stone = stoneModel.clone();
+            stone.scale.set(0.4, 0.4, 0.4);
+            stone.castShadow = true;
+            stone.receiveShadow = true;
+            this.scene.add(stone);
+            this.stones.push({
+                mesh: stone,
+                collider: new THREE.Sphere(new THREE.Vector3(0, -100, 0), SPHERE_RADIUS),
+                velocity: new THREE.Vector3(),
+            });
+        }
     }
 
     // 投掷石头
@@ -98,4 +97,5 @@ class StoneThrower {
         }
     }
 }
-export const stoneThrower = new StoneThrower();
+// export const stoneThrower = new StoneThrower();
+export { StoneThrower };

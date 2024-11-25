@@ -79,7 +79,6 @@ export const player = new Player();
 const loader = new GLTFLoader().setPath( '../Assets/' );
 
 export function loadPlayerModel() {
-    // 加载模型和动画
     loader.load('./Characters/Adventurer.glb', (gltf) => {
         const model = gltf.scene;
         sharedState.playerModel = model;
@@ -147,4 +146,73 @@ export function loadPlayerModel() {
 
         animate();
     });
+
+    // const model = sharedState.gltfCharactorDict['Adventurer'].scene;
+    // sharedState.playerModel = model;
+    // model.scale.set(0.2, 0.2, 0.2);
+    // scene.add(model);
+
+    // // 获取所有动画
+    // const animations = sharedState.gltfCharactorDict['Adventurer'].animations;
+    // const mixer = new THREE.AnimationMixer(model);
+
+    // // 你需要找到四个方向的 walk 动画
+    // const forwardWalk = animations.find(anim => anim.name === 'CharacterArmature|Run');
+    // const backwardWalk = animations.find(anim => anim.name === 'CharacterArmature|Run_Back');
+
+    // // 创建动作并播放
+    // let currentAction = null;
+    // function playWalkAnimation() {
+    //     // 根据 velocity 判断播放哪个动画
+    //     if (player.velocity.length() > 0.5) {  // 玩家正在移动
+    //         let direction = player.getForwardVector().dot(player.velocity);  // 计算朝向
+
+    //         // 根据方向决定播放哪个动画
+    //         if (direction > 0.1) {
+    //             // 前进
+    //             if (currentAction !== forwardWalk) {
+    //                 //if (currentAction) currentAction.stop();
+    //                 currentAction = mixer.clipAction(forwardWalk);
+    //                 currentAction.timeScale = 4;
+    //                 currentAction.play();
+    //             }
+    //         } else if (direction < -0.1) {
+    //             // 后退
+    //             if (currentAction !== backwardWalk) {
+    //                 //if (currentAction) currentAction.stop();
+    //                 currentAction = mixer.clipAction(backwardWalk);
+    //                 currentAction.timeScale = 4;
+    //                 currentAction.play();
+    //             }
+    //         } else {
+
+    //         if (currentAction)
+    //             currentAction.stop();
+    //         }
+    //     }
+    //     else
+    //     {
+    //         if (currentAction)
+    //         currentAction.stop();
+    //     }
+    // }
+
+    // // 动画更新
+
+    // function animate() {
+    //     requestAnimationFrame(animate);
+
+    //     const delta = clock.getDelta();
+    //     mixer.update(delta);
+    //     const direction = player.getForwardVector();
+    //     const angle = Math.atan2(direction.x, direction.z);
+    //     model.rotation.y = angle;  // 旋转模型使它面朝前方
+    //     playWalkAnimation();  // 根据方向播放动画
+
+    //     renderer.render(scene, player.camera);
+    // }
+
+    // animate();
+
+
 }
