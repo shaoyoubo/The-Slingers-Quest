@@ -8,7 +8,6 @@
     /* 基本样式 */
     body, html {
       font-family: Arial, sans-serif;
-      display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
@@ -23,7 +22,7 @@
       left: 0;
       width: 100vw;
       height: 100vh;
-      background-image: url('./Assets/UI/background.png'); /* 替换为实际路径 */
+      background-image: url('./Assets/UI/background.jpg'); /* 替换为实际路径 */
       background-size: cover;
       background-position: center;
       z-index: -1;
@@ -31,8 +30,9 @@
 
     /* 菜单容器 */
     .menu {
-      text-align: center;
-    }
+  text-align: center;
+  margin-top: 180px; /* 增加上边距 */
+}
 
     /* 按钮样式 */
     .menu button {
@@ -113,7 +113,7 @@
   <div class="background"></div>
 
   <div class="menu">
-    <h1>The Slinger's Oath: Shadows of the Undead</h1>
+    <h1>The Slinger's Quest: Rise of the Slimes</h1>
     <button onclick="startGame()">Start Game</button>
     <button onclick="openSettings()">Settings</button>
     <button onclick="viewInstructions()">Instructions</button>
@@ -123,11 +123,11 @@
   <div id="overlay" class="overlay">
     <div class="modal">
       <h2>Game Rules</h2>
-	  <p>1.Survive the Horde: Zombies will spawn randomly in the map. Win by surviving a certain amount of time.</p>
-	  <p>2.Stones are Your Weapon: Use stones wisely. Your powerful skill allow you to kill zombies with one hit. </p>
-	  <p>3.Try Not to Miss: Stones are powerful but scarce. Gain them slowly during time or by killing zombies.</p>
-	  <p>4.Stay Vigilant: Zombies appear without warning. Listen, watch, and keep moving, or they'll overwhelm you.</p>
-	  <p>5.Strike Quickly: Zombies move quickly. Let none get too close.</p>
+	  <p>1.Survive the Horde: Slimes will spawn randomly in the map. Win by surviving a certain amount of time.</p>
+	  <p>2.Stones are Your Weapon: Use stones wisely. Your powerful skill allow you to kill slimes with one hit. </p>
+	  <p>3.Try Not to Miss: Stones are powerful but scarce. Gain them slowly during time or by killing slimes.</p>
+	  <p>4.Stay Vigilant: Slimes appear without warning. Listen, watch, and keep moving, or they'll overwhelm you.</p>
+	  <p>5.Strike Quickly: Slimes move quickly. Let none get too close.</p>
 	  <button onclick="closeInstructions()">Close</button>
 	</div>
   </div>
