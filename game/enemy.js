@@ -20,15 +20,15 @@ class ZombiesGenerator{
     }
     loadZombies() {
         
-        const zombieModel = sharedState.gltfEnvironmentDict['stone'].scene;
+        const zombieModel = sharedState.gltfCharactorDict['Slime'].scene;
         for (let i = 0; i < NUM_ZOMBIES; i++) {
             const zombie = zombieModel.clone();
-            zombie.scale.set(0.1, 0.1, 0.1);
+            zombie.scale.set(1, 1, 1);
             zombie.castShadow = true;
             zombie.receiveShadow = true;
             this.zombies.push({
                 mesh: zombie,
-                collider: new Capsule(new THREE.Vector3(i, 5, 0), new THREE.Vector3(i, 5.65, 0), 0.35),
+                collider: new Capsule(new THREE.Vector3(0, -100, 0), new THREE.Vector3(0, -99.35, 0), 0.35),
                 velocity: new THREE.Vector3(),
                 onFloor: false,
             });

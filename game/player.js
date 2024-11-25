@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { Capsule } from 'three/addons/math/Capsule.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { scene, renderer, clock ,sharedState} from './init.js';
+import { zombiesGenerator } from './loadClasses.js';
 
 
 class Player {
@@ -140,6 +141,10 @@ export function loadPlayerModel() {
             const angle = Math.atan2(direction.x, direction.z);
             model.rotation.y = angle;  // 旋转模型使它面朝前方
             playWalkAnimation();  // 根据方向播放动画
+
+            // for (const zombie of zombiesGenerator.zombies) {
+            //     zombie.mesh.position.copy(zombie.collider.start);
+            // }
 
             renderer.render(scene, player.camera);
         }
