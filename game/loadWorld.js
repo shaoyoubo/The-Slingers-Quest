@@ -11,9 +11,9 @@ export function loadWorldModel(scene, worldOctree) {
     const textureLoader = new THREE.TextureLoader();
 
     // 加载纹理
-    const colorMap = textureLoader.load('../Assets/textures/Rock051_4K-PNG_Color.png');
-    const normalMap = textureLoader.load('../Assets/textures/Rock051_4K-PNG_NormalGL.png');
-    const roughnessMap = textureLoader.load('../Assets/textures/Rock051_4K-PNG_Roughness.png');
+    const colorMap = textureLoader.load('../Assets/textures/Rock051_1K-PNG_Color.png');
+    const normalMap = textureLoader.load('../Assets/textures/Rock051_1K-PNG_NormalGL.png');
+    const roughnessMap = textureLoader.load('../Assets/textures/Rock051_1K-PNG_Roughness.png');
     colorMap.repeat.set(0.001, 0.001);
     normalMap.repeat.set(0.001, 0.001);
     roughnessMap.repeat.set(0.001, 0.001);
