@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Slinger's Oath: Shadows of the Undead</title>
+  <style>
+    /* 基本样式 */
+    body, html {
+      font-family: Arial, sans-serif;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      color: #fff;
+    }
+
+    /* 背景图片 */
+    .background {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-image: url('/assets/background-B699vjjI.jpg'); /* 替换为实际路径 */
+      background-size: cover;
+      background-position: center;
+      z-index: -1;
+    }
+
+    /* 菜单容器 */
+    .menu {
+  text-align: center;
+  margin-top: 180px; /* 增加上边距 */
+}
+
+    /* 按钮样式 */
+    .menu button {
+		font-family: 'Georgia', sans-serif;  /* 更改为 Arial 字体 */
+      width: 200px;
+      padding: 10px;
+      margin: 10px 0;
+      font-size: 1.2em;
+      cursor: pointer;
+      border: none;
+      border-radius: 5px;
+      color: #fff;
+      background-color: #444;
+      transition: background-color 0.3s;
+    }
+
+    .menu button:hover {
+      background-color: #666;
+    }
+
+    /* 遮罩层样式 */
+    .overlay {
+      display: none; /* 初始隐藏 */
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.7); /* 半透明黑色背景 */
+      z-index: 10;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* 弹窗样式 */
+    .modal {
+      display: none;
+      background-color: #333;
+      color: #fff;
+      padding: 20px;
+      width: 80%;
+      max-width: 400px;
+      border-radius: 8px;
+      text-align: center;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+	    text-align: left;
+
+      font-family: 'Georgia', sans-serif;  /* 更改为 Arial 字体 */
+    }
+
+    .modal h2 {
+      margin-top: 0;
+    }
+
+    /* 关闭按钮 */
+    .modal button {
+      margin-top: 20px;
+      padding: 10px;
+      background-color: #666;
+      border: none;
+      border-radius: 5px;
+      color: #fff;
+      cursor: pointer;
+    }
+
+    .modal button:hover {
+      background-color: #888;
+    }
+    h1 {
+      font-family: 'Georgia', sans-serif;  /* 更改为 Arial 字体 */
+      font-size: 36px;  /* 设置字体大小 */
+      font-weight: bold;  /* 设置字体加粗 */
+      color: white;  /* 设置字体颜色 */
+    }
+  </style>
+</head>
+<body>
+  <div class="background"></div>
+
+  <div class="menu">
+    <h1>The Slinger's Quest: Rise of the Slimes</h1>
+    <button onclick="startGame()">Start Game</button>
+    <button onclick="openSettings()">Settings</button>
+    <button onclick="viewInstructions()">Instructions</button>
+  </div>
+
+  <!-- 遮罩层和弹窗 -->
+  <div id="overlay" class="overlay">
+    <div class="modal">
+      <h2>Game Rules</h2>
+	  <p>1.Survive the Horde: Slimes will spawn randomly in the map. Win by surviving a certain amount of time.</p>
+	  <p>2.Stones are Your Weapon: Use stones wisely. Your powerful skill allow you to kill slimes with one hit. </p>
+	  <p>3.Try Not to Miss: Stones are powerful but scarce. Gain them slowly during time or by killing slimes.</p>
+	  <p>4.Stay Vigilant: Slimes appear without warning. Listen, watch, and keep moving, or they'll overwhelm you.</p>
+	  <p>5.Strike Quickly: Slimes move quickly. Let none get too close.</p>
+	  <button onclick="closeInstructions()">Close</button>
+	</div>
+  </div>
+
+  <script>
+    function startGame() {
+      window.location.href = "game.html";
+    }
+    
+    function openSettings() {
+      console.log("Opening settings...");
+    }
+
+    function viewInstructions() {
+      document.getElementById("overlay").style.display = "flex";
+      document.querySelector(".modal").style.display = "block";
+    }
+
+    function closeInstructions() {
+      // 隐藏遮罩层和弹窗
+      document.getElementById("overlay").style.display = "none";
+    }
+  </script>
+</body>
+</html>

@@ -68,11 +68,11 @@ function initializeViewToggle() {
         const currentView = toggleViewButton.getAttribute('data-view'); // 获取当前视角值
 
         if (currentView === 'third') {
-            sharedState.cameraDistance = 0.14;
+            sharedState.cameraDistance = -0.05;
             toggleViewButton.setAttribute('data-view', 'first'); // 更新视角状态
             toggleViewButton.textContent = 'First Person View';
         } else {
-            sharedState.cameraDistance = 0.7;
+            sharedState.cameraDistance = 0.14;
             toggleViewButton.setAttribute('data-view', 'third'); // 更新视角状态
             toggleViewButton.textContent = 'Third Person View';
         }
