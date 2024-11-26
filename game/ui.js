@@ -7,13 +7,15 @@ class EnergyManager {
         this.energyCostPerThrow = energyCostPerThrow; // 每次投掷消耗的能量
 
         this.energyBar = null;
+        this.hits = 0;
         this.stoneCountElement = null;
     }
 
     // 初始化，绑定 DOM 元素
-    init(energyBarId, stoneCountId) {
+    init(energyBarId, stoneCountId, hitsId) {
         this.energyBar = document.getElementById(energyBarId);
         this.stoneCountElement = document.getElementById(stoneCountId);
+        this.hitsElement = document.getElementById(hitsId);
 
         if (!this.energyBar || !this.stoneCountElement) {
             console.error("EnergyManager: Failed to find required DOM elements.");
@@ -41,6 +43,7 @@ class EnergyManager {
         }
 
         this.updateStoneCount();
+        this.hitsElement.textContent = this.hits;
     }
 
     updateStoneCount() {

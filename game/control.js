@@ -118,6 +118,7 @@ function enemyAndStoneCollisions() {
                 enemy.velocity.set(0, 0, 0);
                 energyManager.currentEnergy = Math.min(energyManager.currentEnergy + 20, energyManager.maxEnergy);
                 energyManager.updateEnergyBar();
+                energyManager.hits ++;
                 SlimeDeath(enemy.collider.center);
                 break;
             }
@@ -179,7 +180,7 @@ function showGameOverPopup() {
 function ReturntoMainMenu() {
     const toggleViewButton = document.getElementById('ReturnMenu');
     toggleViewButton.addEventListener('click', () => {
-
+        energyManager.hits = 0;
         for (const enemy of enemiesGenerator.enemies) {
             enemy.collider.center.set(10, -100, 0);
             enemy.velocity.set(0, 0, 0);

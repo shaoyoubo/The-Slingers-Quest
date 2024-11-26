@@ -42,7 +42,7 @@ class EnemiesGenerator{
         // console.log("generateEnemy");
         // console.log(this.enemyIdx);
         const enemy = this.enemies[this.enemyIdx];
-        enemy.collider.center.set(0, 5, 0);
+        enemy.collider.center.set(30*Math.random()-13, 7, 30*Math.random()-12);
         enemy.velocity.set(0, 0, 0);
         this.enemyIdx = (this.enemyIdx + 1) % this.enemies.length;
     }

@@ -73,7 +73,7 @@ async function main(){
 main();
 
 window.onload = () => {
-    energyManager.init('energy-bar', 'stone-count');
+    energyManager.init('energy-bar', 'stone-count','hits-count');
     // 模拟能量恢复的循环
     setInterval(() => {
         energyManager.recoverEnergy();
