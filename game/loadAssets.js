@@ -3,7 +3,7 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
 async function loadAssets(gltfCharactorDict, gltfEnvironmentDict) {
 
-    const gltfLoader = new GLTFLoader().setPath( '../Assets' );
+    const gltfLoader = new GLTFLoader().setPath( '../Assets/' );
 
     function gltfPromise(path) {
         return new Promise((resolve, reject) => {
@@ -42,7 +42,7 @@ async function loadAssets(gltfCharactorDict, gltfEnvironmentDict) {
 
     characterPaths.forEach((path) => {
         promises.push(
-            gltfPromise(`Characters/${path}.glb`).then((gltf) => {
+            gltfPromise(`./Characters/${path}.glb`).then((gltf) => {
                 gltfCharactorDict[path] = gltf;
                 console.log('Loaded GLTF model:', path, gltf);
             })
@@ -51,7 +51,7 @@ async function loadAssets(gltfCharactorDict, gltfEnvironmentDict) {
 
     environmentPaths.forEach((path) => {
         promises.push(
-            gltfPromise(`Environment/${path}.glb`).then((gltf) => {
+            gltfPromise(`./Environment/${path}.glb`).then((gltf) => {
                 gltfEnvironmentDict[path] = gltf;
                 console.log('Loaded GLTF model:', path, gltf);
             })

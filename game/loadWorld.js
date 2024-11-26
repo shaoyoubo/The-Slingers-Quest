@@ -5,7 +5,8 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { OctreeHelper } from 'three/addons/helpers/OctreeHelper.js';
 
 
-import { GUI } from 'three/addons/libs/lil-gui.module.min.js';const loader = new GLTFLoader().setPath('../Assets/');
+import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
+const loader = new GLTFLoader().setPath('../Assets/');
 
 export function loadWorldModel(scene, worldOctree) {
     const textureLoader = new THREE.TextureLoader();
