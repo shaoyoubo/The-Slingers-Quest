@@ -3,6 +3,7 @@ import {clock, sharedState } from './init.js'; // 时钟和共享状态
 import { inputManager } from './InputManager.js'; // 键盘输入管理器
 import { stoneThrower } from './loadClasses.js'; // 投石功能
 import { enemiesGenerator } from './loadClasses.js'; // 生成僵尸
+import {energyManager,initializeViewToggle} from './ui.js';
 const GRAVITY = 30;
 const STEPS_PER_FRAME = 5;
 const Enemy_Speed = 0.01;
@@ -95,6 +96,32 @@ export function updateStones(deltaTime, player) {
         stone.mesh.position.copy(stone.collider.center);
     }
 }
+function SlimeDeath(position) {
+    const audio = new Audio('../Assets/UI/SlimeDeath.mp3'); // Path to your sound file
+    audio.play(); // Play the sound
+}
+function enemyAndStoneCollisions() {
+    for (const stone of stoneThrower.stones) {
+        if(stone.collider.center.y < -25) 
+            continue;
+        for (const enemy of enemiesGenerator.enemies) {
+            if(enemy.collider.center.y < -25)
+                continue;
+            const distanceSquared = stone.collider.center.distanceToSquared(enemy.collider.center);
+            const collisionRadius = stone.collider.radius + enemy.collider.radius;
+            const collisionRadiusSquared = collisionRadius * collisionRadius;
+            if (distanceSquared < collisionRadiusSquared) {
+                stone.collider.center.set(0, -100, 0);
+                stone.velocity.set(0, 0, 0);
+                enemy.collider.center.set(0, -100, 0);
+                enemy.velocity.set(0, 0, 0);
+                energyManager.currentEnergy = Math.min(energyManager.currentEnergy + 20, energyManager.maxEnergy);
+                SlimeDeath(enemy.collider.center);
+                break;
+            }
+        }
+    }
+}
 
 function playerStoneCollision(stone, player) {
     const center = vector1.addVectors(player.collider.start, player.collider.end).multiplyScalar(0.5);
@@ -180,6 +207,7 @@ export function animate(renderer, scene, player, stats, cameraDistance) {
         updateStones(deltaTime, player);
         updateEnemies(deltaTime, player);
         teleportPlayerIfOob(player);
+        enemyAndStoneCollisions();
     }
 
     renderer.render(scene, player.camera);
