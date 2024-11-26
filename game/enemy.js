@@ -8,50 +8,50 @@ const NUM_ZOMBIES = 20;
 const vector1 = new THREE.Vector3();
 const vector2 = new THREE.Vector3();
 const vector3 = new THREE.Vector3();
-class ZombiesGenerator{
+class EnemiesGenerator{
     constructor(){
-        this.zombies = [];
-        this.zombieIdx = 0;
+        this.enemies = [];
+        this.enemyIdx = 0;
         this.loader = new GLTFLoader().setPath('../Assets/');
     }
     updateScene(scene) {
-        this.loadZombies();
+        this.loadEnemies();
         this.scene = scene;
         for (let i = 0; i < NUM_ZOMBIES; i++) {
-            this.scene.add(this.zombies[i].mesh);
-            console.log("zombie added", i, this.zombies[i].mesh);
+            this.scene.add(this.enemies[i].mesh);
+            console.log("enemy added", i, this.enemies[i].mesh);
         }
     }
-    loadZombies() {
+    loadEnemies() {
         
-        const zombieModel = sharedState.gltfCharactorDict['Slime'].scene;
+        const enemyModel = sharedState.gltfCharactorDict['Slime'].scene;
         for (let i = 0; i < NUM_ZOMBIES; i++) {
-            const zombie = zombieModel.clone();
-            zombie.scale.set(3, 3, 3);
-            zombie.castShadow = true;
-            zombie.receiveShadow = true;
-            this.zombies.push({
-                mesh: zombie,
+            const enemy = enemyModel.clone();
+            enemy.scale.set(3, 3, 3);
+            enemy.castShadow = true;
+            enemy.receiveShadow = true;
+            this.enemies.push({
+                mesh: enemy,
                 collider: new THREE.Sphere(new THREE.Vector3(0, -100, 0), SLIME_RADIUS),
                 velocity: new THREE.Vector3(),
                 onFloor: false,
             });
         }
     }
-    generateZombie(){
-        // console.log("generateZombie");
-        // console.log(this.zombieIdx);
-        const zombie = this.zombies[this.zombieIdx];
-        zombie.collider.center.set(0, 5, 0);
-        zombie.velocity.set(0, 0, 0);
-        this.zombieIdx = (this.zombieIdx + 1) % this.zombies.length;
+    generateEnemy(){
+        // console.log("generateEnemy");
+        // console.log(this.enemyIdx);
+        const enemy = this.enemies[this.enemyIdx];
+        enemy.collider.center.set(0, 5, 0);
+        enemy.velocity.set(0, 0, 0);
+        this.enemyIdx = (this.enemyIdx + 1) % this.enemies.length;
     }
-    ZombiesCollision(){
-        for (let i = 0, length = this.zombies.length; i < length; i++) {
-            const s1 = this.zombies[i];
+    EnemiesCollision(){
+        for (let i = 0, length = this.enemies.length; i < length; i++) {
+            const s1 = this.enemies[i];
 
             for (let j = i + 1; j < length; j++) {
-                const s2 = this.zombies[j];
+                const s2 = this.enemies[j];
 
                 const d2 = s1.collider.center.distanceToSquared(s2.collider.center);
                 const r = s1.collider.radius + s2.collider.radius;
@@ -74,5 +74,5 @@ class ZombiesGenerator{
         }
     }
 }
-// export const zombiesGenerator = new ZombiesGenerator();
-export { ZombiesGenerator };
+// export const enemiesGenerator = new EnemiesGenerator();
+export { EnemiesGenerator };

@@ -27,12 +27,12 @@ async function main(){
     await loadClasses();
     console.log("loadClasses done");
     // const checkInitialization = setInterval(() => {
-    //     if (sharedState.initZombiesGenerator) {
-    //         console.log("ZombieGenerator initialized.");
+    //     if (sharedState.initEnemiesGenerator) {
+    //         console.log("EnemyGenerator initialized.");
     //         clearInterval(checkInitialization); // 停止检查
-    //         zombiesGenerator.updateScene(scene); // 调用更新场景方法
+    //         enemiesGenerator.updateScene(scene); // 调用更新场景方法
     //     } else {
-    //         console.warn("ZombieGenerator not initialized yet.");
+    //         console.warn("EnemyGenerator not initialized yet.");
     //     }
     // }, 100); // 每100毫秒检查一次
     

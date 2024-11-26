@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { Capsule } from 'three/addons/math/Capsule.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { scene, renderer, clock ,sharedState} from './init.js';
-import { zombiesGenerator } from './loadClasses.js';
+import { enemiesGenerator } from './loadClasses.js';
 
 
 class Player {

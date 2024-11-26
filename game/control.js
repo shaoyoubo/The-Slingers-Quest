@@ -2,10 +2,10 @@ import * as THREE from 'three';
 import {clock, sharedState } from './init.js'; // 时钟和共享状态
 import { inputManager } from './InputManager.js'; // 键盘输入管理器
 import { stoneThrower } from './loadClasses.js'; // 投石功能
-import { zombiesGenerator } from './loadClasses.js'; // 生成僵尸
+import { enemiesGenerator } from './loadClasses.js'; // 生成僵尸
 const GRAVITY = 30;
 const STEPS_PER_FRAME = 5;
-const Zombie_Speed = 0.01;
+const Enemy_Speed = 0.01;
 const vector1 = new THREE.Vector3();
 const vector2 = new THREE.Vector3();
 const vector3 = new THREE.Vector3();
@@ -130,39 +130,39 @@ export function teleportPlayerIfOob(player) {
 }
 
 
-function updateZombies(deltaTime, player) {
-    for (const zombie of zombiesGenerator.zombies) {
-        // console.log(zombiesGenerator.zombieIdx);
-        // console.log(zombie.collider.start);
-        zombie.collider.center.addScaledVector(zombie.velocity, deltaTime);
+function updateEnemies(deltaTime, player) {
+    for (const enemy of enemiesGenerator.enemies) {
+        // console.log(enemiesGenerator.enemyIdx);
+        // console.log(enemy.collider.start);
+        enemy.collider.center.addScaledVector(enemy.velocity, deltaTime);
 
-        const result = player.worldOctree.sphereIntersect(zombie.collider);
+        const result = player.worldOctree.sphereIntersect(enemy.collider);
 
         if (result) {
-            zombie.velocity.addScaledVector(result.normal, -result.normal.dot(zombie.velocity) * 1.5);
-            zombie.collider.center.add(result.normal.multiplyScalar(result.depth));
+            enemy.velocity.addScaledVector(result.normal, -result.normal.dot(enemy.velocity) * 1.5);
+            enemy.collider.center.add(result.normal.multiplyScalar(result.depth));
         } else {
-            if (zombie.collider.center.y > -25) {
-                zombie.velocity.y -= GRAVITY * deltaTime;
+            if (enemy.collider.center.y > -25) {
+                enemy.velocity.y -= GRAVITY * deltaTime;
             }
         }
 
         const damping = Math.exp(-1.5 * deltaTime) - 1;
-        zombie.velocity.addScaledVector(zombie.velocity, damping);
-        const directionToPlayer = new THREE.Vector3().subVectors(player.collider.start, zombie.collider.center);
+        enemy.velocity.addScaledVector(enemy.velocity, damping);
+        const directionToPlayer = new THREE.Vector3().subVectors(player.collider.start, enemy.collider.center);
         directionToPlayer.y = 0;
         directionToPlayer.normalize();
-        zombie.velocity.add(directionToPlayer.multiplyScalar(Zombie_Speed));
-        zombie.mesh.position.copy(zombie.collider.center);
-        zombie.mesh.rotation.y = Math.atan2(directionToPlayer.x, directionToPlayer.z)+Math.PI*0.75;        
+        enemy.velocity.add(directionToPlayer.multiplyScalar(Enemy_Speed));
+        enemy.mesh.position.copy(enemy.collider.center);
+        enemy.mesh.rotation.y = Math.atan2(directionToPlayer.x, directionToPlayer.z)+Math.PI*0.75;        
         
     }
 
-    zombiesGenerator.ZombiesCollision();
+    enemiesGenerator.EnemiesCollision();
 }
 
 
-let lastZombieGenerationTime = 0;
+let lastEnemyGenerationTime = 0;
 const generationInterval = 1000;
 
 export function animate(renderer, scene, player, stats, cameraDistance) {
@@ -171,14 +171,14 @@ export function animate(renderer, scene, player, stats, cameraDistance) {
     const deltaTime = Math.min(0.03, clock.getDelta()) / STEPS_PER_FRAME;
 
     for (let i = 0; i < STEPS_PER_FRAME; i++) {
-        if (now - lastZombieGenerationTime > generationInterval) {
-            zombiesGenerator.generateZombie();
-            lastZombieGenerationTime = now;
+        if (now - lastEnemyGenerationTime > generationInterval) {
+            enemiesGenerator.generateEnemy();
+            lastEnemyGenerationTime = now;
         }
         controls(deltaTime, player);
         updatePlayer(deltaTime, player, cameraDistance);
         updateStones(deltaTime, player);
-        updateZombies(deltaTime, player);
+        updateEnemies(deltaTime, player);
         teleportPlayerIfOob(player);
     }
 
