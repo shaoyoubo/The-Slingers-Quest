@@ -10,7 +10,7 @@ import { OctreeHelper } from 'three/addons/helpers/OctreeHelper.js';
 import { Capsule } from 'three/addons/math/Capsule.js';
 
 import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
-import { cameraNear, select } from 'three/webgpu';
+import { cameraNear, Return, select } from 'three/webgpu';
 import {scene,renderer,clock,sharedState} from './game/init.js';
 import {player,loadPlayerModel} from './game/player.js';
 import { stoneThrower } from './game/loadClasses.js';
@@ -18,10 +18,9 @@ import { loadWorldModel } from './game/loadWorld.js';
 import { update } from 'three/examples/jsm/libs/tween.module.js';
 import {energyManager,initializeViewToggle} from './game/ui.js';
 import { inputManager } from './game/InputManager.js';
-import { animate } from './game/control.js';
+import { animate,ReturntoMainMenu } from './game/control.js';
 import { loadAssets } from './game/loadAssets.js';
 import { loadClasses } from './game/loadClasses.js';
-
 async function main(){
     console.log("main");
     await loadClasses();
@@ -61,9 +60,9 @@ async function main(){
 
     
     initializeViewToggle();
+    ReturntoMainMenu();
     
     function gameLoop() {
-        
         animate(renderer, scene, player, stats, sharedState.cameraDistance);
     }
     renderer.setAnimationLoop( gameLoop );
@@ -80,5 +79,4 @@ window.onload = () => {
         energyManager.recoverEnergy();
     }, 100); // 每 100ms 恢复能量
 };
-
 

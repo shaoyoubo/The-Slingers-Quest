@@ -10,6 +10,7 @@ const Enemy_Speed = 0.01;
 const vector1 = new THREE.Vector3();
 const vector2 = new THREE.Vector3();
 const vector3 = new THREE.Vector3();
+let gameover = false;
 
 export function controls(deltaTime, player) {
     
@@ -116,6 +117,7 @@ function enemyAndStoneCollisions() {
                 enemy.collider.center.set(10, -100, 0);
                 enemy.velocity.set(0, 0, 0);
                 energyManager.currentEnergy = Math.min(energyManager.currentEnergy + 20, energyManager.maxEnergy);
+                energyManager.updateEnergyBar();
                 SlimeDeath(enemy.collider.center);
                 break;
             }
@@ -142,6 +144,58 @@ function playerStoneCollision(stone, player) {
 
             const d = (r - Math.sqrt(d2)) / 2;
             stone_center.addScaledVector(normal, -d);
+        }
+    }
+}
+
+function playerEnemyCollision(enemy, player) {
+    if (enemy.collider.center.y < -25) 
+        return false;
+    if (player.collider.end.y < -25) 
+        return false;
+    // Calculate the center of the player's capsule
+    const center = vector1.addVectors(player.collider.start, player.collider.end).multiplyScalar(0.5);
+    const slimeCenter = enemy.collider.center;
+    const collisionRadius = player.collider.radius + enemy.collider.radius; // Combined radius
+    const collisionRadiusSquared = collisionRadius * collisionRadius; // Squared combined radius
+
+    // Check collision at key points of the capsule: start, end, and center
+    for (const point of [player.collider.start, player.collider.end, center]) {
+        const distanceSquared = point.distanceToSquared(slimeCenter);
+
+        if (distanceSquared < collisionRadiusSquared) {
+            gameover = true; // Set the game over flag
+            // Collision detected, show the death popup
+            return true; // Return true to indicate collision
+        }
+    }
+    return false; // Return false if no collision
+}
+function showGameOverPopup() {
+    const popup = document.getElementById('game-over-popup');
+    popup.classList.remove('hidden'); // 显示弹窗
+}
+
+function ReturntoMainMenu() {
+    const toggleViewButton = document.getElementById('ReturnMenu');
+    toggleViewButton.addEventListener('click', () => {
+
+        for (const enemy of enemiesGenerator.enemies) {
+            enemy.collider.center.set(10, -100, 0);
+            enemy.velocity.set(0, 0, 0);
+        }
+        for (const stone of stoneThrower.stones) {
+            stone.collider.center.set(0, -100, 0);
+            stone.velocity.set(0, 0, 0);
+        }
+        window.location.href = "../index.html";
+    });
+}
+function checkPlayerEnemyCollisions(player) {
+    for (const enemy of enemiesGenerator.enemies) {
+        if (playerEnemyCollision(enemy,player)) {
+            showGameOverPopup();
+            break;
         }
     }
 }
@@ -193,6 +247,9 @@ let lastEnemyGenerationTime = 0;
 const generationInterval = 1000;
 
 export function animate(renderer, scene, player, stats, cameraDistance) {
+    if (gameover) {
+        return;
+    }
     const now = performance.now();
 
     const deltaTime = Math.min(0.03, clock.getDelta()) / STEPS_PER_FRAME;
@@ -208,8 +265,10 @@ export function animate(renderer, scene, player, stats, cameraDistance) {
         updateEnemies(deltaTime, player);
         teleportPlayerIfOob(player);
         enemyAndStoneCollisions();
+        checkPlayerEnemyCollisions(player);
     }
 
     renderer.render(scene, player.camera);
     stats.update();
 }
+export {ReturntoMainMenu, gameover};
