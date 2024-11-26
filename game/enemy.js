@@ -32,7 +32,7 @@ class EnemiesGenerator{
             enemy.receiveShadow = true;
             this.enemies.push({
                 mesh: enemy,
-                collider: new THREE.Sphere(new THREE.Vector3(0, -100, 0), SLIME_RADIUS),
+                collider: new THREE.Sphere(new THREE.Vector3(10, -100, 0), SLIME_RADIUS),
                 velocity: new THREE.Vector3(),
                 onFloor: false,
             });

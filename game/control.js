@@ -113,7 +113,7 @@ function enemyAndStoneCollisions() {
             if (distanceSquared < collisionRadiusSquared) {
                 stone.collider.center.set(0, -100, 0);
                 stone.velocity.set(0, 0, 0);
-                enemy.collider.center.set(0, -100, 0);
+                enemy.collider.center.set(10, -100, 0);
                 enemy.velocity.set(0, 0, 0);
                 energyManager.currentEnergy = Math.min(energyManager.currentEnergy + 20, energyManager.maxEnergy);
                 SlimeDeath(enemy.collider.center);
