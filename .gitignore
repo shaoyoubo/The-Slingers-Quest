@@ -1,3 +1,8 @@
 package.json
 node_modules
 package-lock.json
+Assets/.DS_Store
+Assets/Characters/.DS_Store
+Assets/UI/.DS_Store
+.DS_Store
+Assets/textures/.DS_Store

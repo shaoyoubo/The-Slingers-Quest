@@ -10,7 +10,7 @@ const Enemy_Speed = 0.01;
 const vector1 = new THREE.Vector3();
 const vector2 = new THREE.Vector3();
 const vector3 = new THREE.Vector3();
-let gameover = false;
+let isPaused = false;
 
 export function controls(deltaTime, player) {
     
@@ -165,7 +165,7 @@ function playerEnemyCollision(enemy, player) {
         const distanceSquared = point.distanceToSquared(slimeCenter);
 
         if (distanceSquared < collisionRadiusSquared) {
-            gameover = true; // Set the game over flag
+            isPaused = true; // Set the game over flag
             // Collision detected, show the death popup
             return true; // Return true to indicate collision
         }
@@ -248,7 +248,7 @@ let lastEnemyGenerationTime = 0;
 const generationInterval = 1000;
 
 export function animate(renderer, scene, player, stats, cameraDistance) {
-    if (gameover) {
+    if (isPaused) {
         return;
     }
     const now = performance.now();
@@ -272,4 +272,10 @@ export function animate(renderer, scene, player, stats, cameraDistance) {
     renderer.render(scene, player.camera);
     stats.update();
 }
-export {ReturntoMainMenu, gameover};
+export function pauseGame() {
+    isPaused = true;
+}
+export function resumeGame() {
+    isPaused = false;
+}
+export {ReturntoMainMenu, isPaused};

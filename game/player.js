@@ -3,7 +3,7 @@ import { Capsule } from 'three/addons/math/Capsule.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { scene, renderer, clock ,sharedState} from './init.js';
 import { enemiesGenerator } from './loadClasses.js';
-import {gameover} from './control.js';
+import {isPaused} from './control.js';
 
 class Player {
     constructor() {
@@ -133,7 +133,7 @@ export function loadPlayerModel() {
 
         // 动画更新
         function animate() {
-            if (gameover) return;
+            if (isPaused) return;
             requestAnimationFrame(animate);
 
             const delta = clock.getDelta();

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>The Slinger's Oath: Shadows of the Undead</title>
+  <title>The Slinger's Quest: Rise of the Slimes</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -167,17 +167,22 @@
 
     Total Hits:<span id="hits-count">0</span>
   </div>
-  <script>
-    // Show or hide the settings overlay
-    function toggleSettings() {
+  <script type="module">
+    import { pauseGame, resumeGame } from './game/control.js';
+    window.toggleSettings = function() {
       const settingsOverlay = document.getElementById('settingsOverlay');
-      settingsOverlay.style.display = settingsOverlay.style.display === 'flex' ? 'none' : 'flex';
-    }
+      settingsOverlay.style.display = settingsOverlay.style.display === 'none' ? 'flex' : 'none';
+      if (settingsOverlay.style.display === 'none') {
+        resumeGame();
+      } else {
+        pauseGame();
+      }
+    };
 
-    // Close the settings overlay
-    function closeSettings() {
+    window.closeSettings = function() {
       document.getElementById('settingsOverlay').style.display = 'none';
-    }
+      resumeGame();
+    };
   </script>
 
 <div id="game-over-popup" class="popup hidden">
