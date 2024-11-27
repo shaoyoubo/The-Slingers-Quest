@@ -33,7 +33,7 @@ export function controls(deltaTime, player) {
     }
 
     if (player.onFloor && inputManager.keyStates['Space']) {
-        player.velocity.y = 15;
+        player.velocity.y = 10;
     }
 }
 
@@ -234,7 +234,7 @@ function updateEnemies(deltaTime, player) {
         const directionToPlayer = new THREE.Vector3().subVectors(player.collider.start, enemy.collider.center);
         directionToPlayer.y = 0;
         directionToPlayer.normalize();
-        enemy.velocity.add(directionToPlayer.multiplyScalar(Enemy_Speed));
+        enemy.velocity.add(directionToPlayer.multiplyScalar(sharedState.EnemySpeed));
         enemy.mesh.position.copy(enemy.collider.center);
         enemy.mesh.rotation.y = Math.atan2(directionToPlayer.x, directionToPlayer.z)+Math.PI*0.75;        
         
@@ -245,7 +245,6 @@ function updateEnemies(deltaTime, player) {
 
 
 let lastEnemyGenerationTime = 0;
-const generationInterval = 1000;
 
 export function animate(renderer, scene, player, stats, cameraDistance) {
     if (isPaused) {
@@ -256,7 +255,7 @@ export function animate(renderer, scene, player, stats, cameraDistance) {
     const deltaTime = Math.min(0.03, clock.getDelta()) / STEPS_PER_FRAME;
 
     for (let i = 0; i < STEPS_PER_FRAME; i++) {
-        if (now - lastEnemyGenerationTime > generationInterval) {
+        if (now - lastEnemyGenerationTime > sharedState.generationInterval) {
             enemiesGenerator.generateEnemy();
             lastEnemyGenerationTime = now;
         }

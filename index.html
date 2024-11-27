@@ -114,11 +114,26 @@
 
   <div class="menu">
     <h1>The Slinger's Quest: Rise of the Slimes</h1>
-    <button onclick="startGame()">Start Game</button>
+    <button onclick="showDifficultyModal()">Start Game</button>
     <button onclick="openSettings()">Settings</button>
     <button onclick="viewInstructions()">Instructions</button>
   </div>
-
+  <div id="difficultyOverlay" class="overlay">
+    <div class="modal">
+      <h2>Choose Difficulty</h2>
+      <label>
+        <input type="radio" name="difficulty" value="easy" checked> Easy
+      </label><br>
+      <label>
+        <input type="radio" name="difficulty" value="medium"> Medium
+      </label><br>
+      <label>
+        <input type="radio" name="difficulty" value="hard"> Hard
+      </label><br>
+      <button onclick="startGame()">Confirm</button>
+      <button onclick="closeDifficultyModal()">Cancel</button>
+    </div>
+  </div>
   <!-- 遮罩层和弹窗 -->
   <div id="overlay" class="overlay">
     <div class="modal">
@@ -149,6 +164,27 @@
     function closeInstructions() {
       // 隐藏遮罩层和弹窗
       document.getElementById("overlay").style.display = "none";
+    }
+  </script>
+  <script>
+    function showDifficultyModal() {
+      document.getElementById("difficultyOverlay").style.display = "flex";
+      document.querySelector(".modal").style.display = "block";
+    }
+
+    function closeDifficultyModal() {
+      document.getElementById("difficultyOverlay").style.display = "none";
+    }
+
+    function startGame() {
+      // 获取选中的难度
+      const selectedDifficulty = document.querySelector('input[name="difficulty"]:checked').value;
+
+      // 将难度保存到 localStorage 或通过 URL 参数传递
+      localStorage.setItem("gameDifficulty", selectedDifficulty);
+
+      // 跳转到游戏页面
+      window.location.href = "game.html";
     }
   </script>
 </body>

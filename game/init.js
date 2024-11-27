@@ -38,6 +38,8 @@ let sharedState = {
     cameraDistance : -0.05,
     gltfCharactorDict: {},
     gltfEnvironmentDict: {},
+    EnemySpeed:0.01,
+    generationInterval: 1000,
 };
 
 export { scene, renderer, clock, sharedState };

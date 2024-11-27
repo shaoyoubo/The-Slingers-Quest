@@ -21,6 +21,29 @@ import { inputManager } from './game/InputManager.js';
 import { animate,ReturntoMainMenu } from './game/control.js';
 import { loadAssets } from './game/loadAssets.js';
 import { loadClasses } from './game/loadClasses.js';
+document.addEventListener("DOMContentLoaded", () => {
+    // 读取难度值
+    const difficulty = localStorage.getItem("gameDifficulty") || "easy";
+  
+    // 根据难度调整游戏逻辑
+    if (difficulty === "easy") {
+      console.log("Easy mode selected: Slimes spawn slower, more stones.");
+      sharedState.generationInterval = 1500;
+        sharedState.EnemySpeed = 0.007;
+      // 设置简单模式参数
+    } else if (difficulty === "medium") {
+      console.log("Medium mode selected: Default settings.");
+      // 设置普通模式参数
+    } else if (difficulty === "hard") {
+      console.log("Hard mode selected: Slimes spawn faster, fewer stones.");
+        sharedState.generationInterval = 700;
+        sharedState.EnemySpeed = 0.015;
+      // 设置困难模式参数
+    }
+  
+    // 开始游戏
+    main();
+  });
 async function main(){
     console.log("main");
     await loadClasses();
@@ -70,7 +93,7 @@ async function main(){
     
     
 }
-main();
+//main();
 
 window.onload = () => {
     energyManager.init('energy-bar', 'stone-count','hits-count');
