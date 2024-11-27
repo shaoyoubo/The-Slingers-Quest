@@ -4,7 +4,7 @@ import { Capsule } from 'three/addons/math/Capsule.js';
 import { sharedState } from './init';
 const SLIME_RADIUS = 0.25;
 
-const NUM_ZOMBIES = 100;
+const NUM_ZOMBIES = 50;
 const vector1 = new THREE.Vector3();
 const vector2 = new THREE.Vector3();
 const vector3 = new THREE.Vector3();

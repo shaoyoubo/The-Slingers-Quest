@@ -247,6 +247,7 @@ function updateEnemies(deltaTime, player) {
 let lastEnemyGenerationTime = 0;
 
 export function animate(renderer, scene, player, stats, cameraDistance) {
+    console.log(isPaused);
     if (isPaused) {
         return;
     }

@@ -133,7 +133,6 @@ export function loadPlayerModel() {
 
         // 动画更新
         function animate() {
-            if (isPaused) return;
             requestAnimationFrame(animate);
 
             const delta = clock.getDelta();
