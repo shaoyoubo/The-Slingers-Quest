@@ -174,6 +174,8 @@ function playerEnemyCollision(enemy, player) {
 }
 function showGameOverPopup() {
     const popup = document.getElementById('game-over-popup');
+    document.getElementById('score').innerText = Math.floor(Math.max(sharedState.difficulty * (6*energyManager.hits-2*sharedState.totalhits),0)
+    +6*(Math.pow((performance.now()-sharedState.starttime)/1000+64,2/3)-16));
     popup.classList.remove('hidden'); // 显示弹窗
 }
 
@@ -247,7 +249,6 @@ function updateEnemies(deltaTime, player) {
 let lastEnemyGenerationTime = 0;
 
 export function animate(renderer, scene, player, stats, cameraDistance) {
-    console.log(isPaused);
     if (isPaused) {
         return;
     }

@@ -50,7 +50,7 @@ class StoneThrower {
             energyManager.currentEnergy -= energyManager.energyCostPerThrow;
             energyManager.updateEnergyBar();
         const stone = this.stones[this.stoneIdx];
-        
+        sharedState.totalhits++;
         // 计算投掷方向
         this.player.camera.getWorldDirection(this.player.direction);
 

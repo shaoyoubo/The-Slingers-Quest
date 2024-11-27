@@ -40,6 +40,9 @@ let sharedState = {
     gltfEnvironmentDict: {},
     EnemySpeed:0.01,
     generationInterval: 1000,
+    totalhits: 0,
+    starttime: 0,
+    difficulty: 0,
 };
 
 export { scene, renderer, clock, sharedState };

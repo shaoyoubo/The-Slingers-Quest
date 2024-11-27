@@ -134,7 +134,7 @@ export function loadPlayerModel() {
         // 动画更新
         function animate() {
             requestAnimationFrame(animate);
-
+            if (isPaused) return;
             const delta = clock.getDelta();
             mixer.update(delta);
             const direction = player.getForwardVector();

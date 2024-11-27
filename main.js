@@ -30,14 +30,17 @@ document.addEventListener("DOMContentLoaded", () => {
       console.log("Easy mode selected: Slimes spawn slower, more stones.");
       sharedState.generationInterval = 1500;
         sharedState.EnemySpeed = 0.007;
+        sharedState.difficulty = 50;
       // 设置简单模式参数
     } else if (difficulty === "medium") {
       console.log("Medium mode selected: Default settings.");
+      sharedState.difficulty = 70;
       // 设置普通模式参数
     } else if (difficulty === "hard") {
       console.log("Hard mode selected: Slimes spawn faster, fewer stones.");
         sharedState.generationInterval = 700;
         sharedState.EnemySpeed = 0.015;
+        sharedState.difficulty = 100;
       // 设置困难模式参数
     }
   
@@ -84,7 +87,7 @@ async function main(){
     
     initializeViewToggle();
     ReturntoMainMenu();
-    
+    sharedState.starttime = performance.now();
     function gameLoop() {
         animate(renderer, scene, player, stats, sharedState.cameraDistance);
     }
