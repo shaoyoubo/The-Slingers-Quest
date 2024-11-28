@@ -1,27 +1,43 @@
 import * as THREE from 'three';
 
 const scene = new THREE.Scene();
-scene.background = new THREE.Color( 0x88ccee );
-scene.fog = new THREE.Fog( 0x88ccee, 0, 50 );
 
-const fillLight1 = new THREE.HemisphereLight( 0x8dc1de, 0x00668d, 1.5 );
+// Change the background to a bluish tone
+scene.background = new THREE.Color( 0x3a4f6b ); // Bluish tone for a colder atmosphere
+scene.fog = new THREE.Fog( 0x3a4f6b, 0, 50 ); // Adjusted fog with a bluish hue for consistency
+
+// Adjust the hemisphere light for a cooler tone
+const fillLight1 = new THREE.HemisphereLight( 0x8da7b2, 0x223344, 1 ); // Bluish, cooler tones
 fillLight1.position.set( 2, 1, 1 );
 scene.add( fillLight1 );
 
-const directionalLight = new THREE.DirectionalLight( 0xffffff, 2.5 );
-directionalLight.position.set( - 5, 25, - 1 );
+// Adjust the directional light to have a colder, bluish tone
+const directionalLight = new THREE.DirectionalLight( 0x99c2cc, 1.8 ); // Bluish light color
+directionalLight.position.set( - 5, 25, - 5 ); // Slightly repositioned for better coverage
+directionalLight.intensity = 0.7; // Intensity remains the same for balanced lighting
 directionalLight.castShadow = true;
+
+// Adjust shadow properties for balance
 directionalLight.shadow.camera.near = 0.01;
 directionalLight.shadow.camera.far = 500;
 directionalLight.shadow.camera.right = 30;
 directionalLight.shadow.camera.left = - 30;
-directionalLight.shadow.camera.top	= 30;
+directionalLight.shadow.camera.top = 30;
 directionalLight.shadow.camera.bottom = - 30;
-directionalLight.shadow.mapSize.width = 1024;
-directionalLight.shadow.mapSize.height = 1024;
-directionalLight.shadow.radius = 4;
-directionalLight.shadow.bias = - 0.00006;
+
+// Increase shadow map size for sharper shadows
+directionalLight.shadow.mapSize.width = 2048;
+directionalLight.shadow.mapSize.height = 2048;
+
+// Slightly soften the shadow radius for a more natural, but still eerie effect
+directionalLight.shadow.radius = 6;
+
+// Increase the shadow bias slightly to prevent artifacts
+directionalLight.shadow.bias = - 0.00005;
+
 scene.add( directionalLight );
+
+
 
 
 const renderer = new THREE.WebGLRenderer( { antialias: true } );

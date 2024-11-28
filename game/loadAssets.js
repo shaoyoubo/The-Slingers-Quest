@@ -29,6 +29,7 @@ async function loadAssets(gltfCharactorDict, gltfEnvironmentDict) {
     const characterPaths = [
         'Adventurer',
         'Slime',
+        'SlimePlus',
     ];
 
     const itemPaths = [

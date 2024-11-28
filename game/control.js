@@ -218,6 +218,10 @@ function updateEnemies(deltaTime, player) {
     for (const enemy of enemiesGenerator.enemies) {
         // console.log(enemiesGenerator.enemyIdx);
         // console.log(enemy.collider.start);
+        if (Math.random() < 0.001) { // 1% 的概率跳跃
+            enemy.velocity.y += 10; // 设置跳跃的速度
+        }
+
         enemy.collider.center.addScaledVector(enemy.velocity, deltaTime);
 
         const result = player.worldOctree.sphereIntersect(enemy.collider);

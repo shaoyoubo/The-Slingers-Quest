@@ -167,7 +167,17 @@
 
     Total Hits:<span id="hits-count">0</span>
   </div>
+  <audio id="background-music" src="./Assets/Music/bgm.mp3" loop autoplay muted></audio>
   <script type="module">
+    window.addEventListener('load', function() {
+      var audio = document.getElementById('background-music');
+      audio.volume = 0.5;
+      audio.loop = true;
+      audio.muted = false; 
+      audio.play().catch(function(error) {
+        console.log('播放音乐失败:', error);
+      });
+    });
     import { pauseGame, resumeGame } from './game/control.js';
     window.toggleSettings = function() {
       const settingsOverlay = document.getElementById('settingsOverlay');

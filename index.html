@@ -129,9 +129,18 @@
       <button onclick="closeInstructions()">Close</button>
     </div>
   </div>
-
+  <audio id="background-music" src="./Assets/Music/bgm.mp3" loop autoplay muted></audio>
   <script>
     // Difficulty Modal Functions
+    window.addEventListener('load', function() {
+      var audio = document.getElementById('background-music');
+      audio.volume = 0.5; 
+      audio.loop = true; 
+      audio.muted = false; 
+      audio.play().catch(function(error) {
+        console.log('播放音乐失败:', error);
+      });
+    });
     function showDifficultyModal() {
       document.getElementById("difficultyOverlay").style.display = "flex";
     }
@@ -159,6 +168,7 @@
     function openSettings() {
       console.log("Opening settings...");
     }
+    
   </script>
 </body>
 </html>
