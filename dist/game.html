@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>The Slinger's Oath: Shadows of the Undead</title>
+  <title>The Slinger's Quest: Rise of the Slimes</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -147,7 +147,7 @@
     background: #0056b3;
 }
   </style>
-  <script type="module" crossorigin src="/assets/game-Cy42NhEJ.js"></script>
+  <script type="module" crossorigin src="/assets/game-B_5ATL0Y.js"></script>
 </head>
 <body>
   <!-- Setting Button -->
@@ -168,22 +168,12 @@
 
     Total Hits:<span id="hits-count">0</span>
   </div>
-  <script>
-    // Show or hide the settings overlay
-    function toggleSettings() {
-      const settingsOverlay = document.getElementById('settingsOverlay');
-      settingsOverlay.style.display = settingsOverlay.style.display === 'flex' ? 'none' : 'flex';
-    }
-
-    // Close the settings overlay
-    function closeSettings() {
-      document.getElementById('settingsOverlay').style.display = 'none';
-    }
-  </script>
+  <audio id="background-music" src="./Assets/Music/bgm.mp3" loop autoplay muted></audio>
 
 <div id="game-over-popup" class="popup hidden">
   <div class="popup-content">
       <h1>You Died!</h1>
+      <div style="color: #FFD700;">Your Score: <span id="score">0</span></div>
 	  <button id="ReturnMenu" data-view="first">Return to Main Menu</button>
   </div>
 </div>
