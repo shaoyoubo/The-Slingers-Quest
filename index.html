@@ -13,6 +13,30 @@
       margin: 0;
       color: #fff;
     }
+    .extra-info {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 10px;
+  border-radius: 5px;
+  visibility: hidden; /* 默认隐藏 */
+  opacity: 0;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  white-space: nowrap;
+}
+
+.character:hover .extra-info {
+  visibility: visible; /* 鼠标悬停时显示 */
+  opacity: 1;
+}
+
+.difficulty:hover .extra-info {
+  visibility: visible; /* 鼠标悬停时显示 */
+  opacity: 1;
+}
     .character {
   display: inline-block;
   text-align: center;
@@ -20,11 +44,13 @@
   cursor: pointer;
   border: 2px solid transparent;
   transition: transform 0.2s, border 0.2s;
+
+  font-family: 'Verdana', sans-serif;
 }
 
 .character img {
-  width: 150px; /* 固定宽度 */
-  height: auto; /* 保持宽高比 */
+  height: 250px; /* 固定宽度 */
+  width: auto; /* 保持宽高比 */
   object-fit: contain; /* 避免图片变形 */
 }
 
@@ -42,6 +68,39 @@
 .character.selected {
   border: 2px solid #32cd32; /* Highlight when selected */
 }
+
+
+.difficulty {
+  display: inline-block;
+  text-align: center;
+  margin: 10px;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: transform 0.2s, border 0.2s;
+
+  font-family: 'Verdana', sans-serif;
+}
+
+.difficulty img {
+  height: 250px; /* 固定宽度 */
+  width: auto; /* 保持宽高比 */
+  object-fit: contain; /* 避免图片变形 */
+}
+
+.difficulty p {
+  margin: 5px 0;
+  font-size: 1em;
+  color: #fff;
+}
+
+.difficulty:hover {
+  transform: scale(1.1);
+  border: 2px solid #ffd700; /* Highlight on hover */
+}
+
+.difficulty.selected {
+  border: 2px solid #32cd32; /* Highlight when selected */
+}
     .background {
       position: absolute;
       top: 0;
@@ -56,8 +115,22 @@
 
     .menu {
       text-align: center;
-      margin-top: 180px;
+      margin-top: 160px;
     }
+    .button-container {
+  display: flex;
+  flex-direction: column; /* 垂直排列按钮 */
+  gap: 10px; /* 按钮之间的间距 */
+  align-items: center; /* 水平居中 */
+}
+
+.button-container2 {
+  display: flex;
+  justify-content: center; /* 水平居中按钮 */
+  align-items: center; /* 水平居中 */
+  gap: 40px; /* 按钮之间的间距 */
+}
+
 
     .menu button {
       font-family: 'Georgia', sans-serif;
@@ -67,15 +140,21 @@
       font-size: 1.2em;
       cursor: pointer;
       border: none;
+      opacity: 0.7;
       border-radius: 5px;
-      color: #fff;
-      background-color: #444;
+      color: #000;
+      background-color: #aaa;
       transition: background-color 0.3s;
     }
 
-    .menu button:hover {
-      background-color: #666;
-    }
+    button:hover {
+  background-color: #4CAF50; /* 悬停时背景色为绿色 */
+  color: white; /* 文字变为白色 */
+}
+button:active {
+  background-color: #388e3c; /* 点击时背景色变为深绿色 */
+  border-color: #388e3c; /* 点击时边框变为深绿色 */
+}
 
     .overlay {
       display: none;
@@ -87,23 +166,32 @@
       background-color: rgba(0, 0, 0, 0.7);
       z-index: 10;
       justify-content: center;
+      font-family: 'Arial', sans-serif;
       align-items: center;
     }
-
     .modal {
-      background: #1a1a1a; /* 深色背景 */
-      padding: 30px;
-      border-radius: 15px;
-      text-align: center;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
-      color: #e0e0e0; /* 浅色文字 */
-    }
+  background: #1a1a1a; /* 深色背景 */
+  padding: 30px;
+  border-radius: 15px;
+  text-align: center;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+  color: #e0e0e0; /* 浅色文字 */
+  max-width: 700px; /* 最大宽度 */
+  width: 70%; /* 默认宽度，适配小屏幕 */
+  gap: 30px;
+  /* opacity: 0.9; */
+
+}
 
     .modal h2 {
       margin-top: 0;
       color: #ffd700; /* 金色文字 */
+      font-family: 'Georgia'
     }
-
+    .modal h3 {
+      font-family: 'Tahoma';
+      text-align: left; /* 左对齐 */
+    }
     .modal ul {
       list-style: none;
       padding: 0;
@@ -128,6 +216,8 @@
       border-radius: 5px;
       cursor: pointer;
       margin: 5px;
+
+      font-family: 'Verdana', sans-serif;
       transition: background 0.3s;
     }
 
@@ -141,11 +231,13 @@
   <div class="background"></div>
 
   <div class="menu">
-    <h1>The Slinger's Quest: Rise of the Slimes</h1>
-    <button onclick="showCharacterModal()">Start Game</button>
-    <button onclick="openSettings()">Settings</button>
-    <button onclick="viewInstructions()">Instructions</button>
-    <button onclick="viewRanking()">Ranking</button>
+    <h1 style="font-size:3em; font-family: 'Pacifico', cursive; color:#ffffff">The Slinger's Quest: Rise of the  Slimes</h1>
+    <div class="button-container">
+      <button onclick="showCharacterModal()">Start Game</button>
+      <button onclick="viewInstructions()">Game Rules</button>
+      <button onclick="openSettings()">Controls Guide</button>
+      <button onclick="viewRanking()">Ranking</button>
+    </div>
   </div>
 
   <!-- Ranking Modal -->
@@ -163,44 +255,77 @@
       <div id="character-options">
         <div class="character" onclick="selectCharacter('knight')" data-id="knight">
           <img src="./Assets/Characters/p1.png" alt="Knight">
-          <p>Knight</p>
+          <p>Adventurer</p>
+        <div class="extra-info">The Adventurer.<br>Also the default Choice.</div>
         </div>
         <div class="character" onclick="selectCharacter('mage')" data-id="mage">
           <img src="./Assets/Characters/p2.png" alt="Mage">
-          <p>Mage</p>
+          <p>Ranger</p>
+        <div class="extra-info">The Ranger runs faster.<br>But throw stones slower.</div>
         </div>
         <div class="character" onclick="selectCharacter('archer')" data-id="archer">
           <img src="./Assets/Characters/p3.png" alt="Archer">
-          <p>Archer</p>
+          <p>Warrior</p>
+        <div class="extra-info">The Warrior runs slowly.<br>But throw stones faster.</div>
         </div>
       </div>
+
+      <div class="button-container2">
       <button onclick="confirmCharacter()">Confirm</button>
       <button onclick="closeCharacterModal()">Cancel</button>
+      </div>
     </div>
   </div>
   
   <!-- Difficulty Modal -->
-   
+
   <div id="difficultyOverlay" class="overlay">
     <div class="modal">
-      <h2>Choose Difficulty</h2>
-      <label><input type="radio" name="difficulty" value="easy" checked> Easy</label><br>
-      <label><input type="radio" name="difficulty" value="medium"> Medium</label><br>
-      <label><input type="radio" name="difficulty" value="hard"> Hard</label><br>
+      <h2>Select the Difficulty</h2>
+      <div id="difficulty-options">
+        <div class="difficulty" onclick="selectDifficulty('easy')" data-id="easy">
+          <img src="./Assets/Characters/easy.jpg" alt="Easy">
+          <p>Easy</p>
+          <div class="extra-info">Designed for new players.<br>Slimes spawn and move slowly.</div>
+        </div>
+        <div class="difficulty" onclick="selectDifficulty('medium')" data-id="medium">
+          <img src="./Assets/Characters/medium.jpg" alt="Medium">
+          <p>Medium</p>
+          <div class="extra-info">The default Choice.<br>Slimes spawn and move at moderate speed.</div>
+        </div>
+        <div class="difficulty" onclick="selectDifficulty('hard')" data-id="hard">
+          <img src="./Assets/Characters/hard.jpg" alt="Hard">
+
+          <div class="extra-info">Designed for experienced players.<br>Slimes spawn and move very fast.</div>
+          <p>Hard</p>
+        </div>
+      </div>
+      <div class="button-container2">
       <button onclick="confirmDifficulty()">Confirm</button>
       <button onclick="closeDifficultyModal()">Cancel</button>
+      </div>
     </div>
   </div>
-
   <!-- Instructions Modal -->
+  <div id="controlsOverlay" class="overlay">
+    <div class="modal">
+      <h2>Controls</h2>
+      <h3>W/A/S/D: Move Forward/Left/BackWard/Right</h3>
+      <h3>Space: Jump</h3>
+      <h3>Click Mouse: Throw Stone</h3>
+      <h3>Move Mouse: Toggle View</h3>
+      <h3>Tip:Press ESC if you want to press any button after starting the game.</h3>
+      <button onclick="closeControls()">Close</button>
+    </div>
+  </div>
   <div id="instructionsOverlay" class="overlay">
     <div class="modal">
       <h2>Game Rules</h2>
-      <p>1. Survive the Horde: Slimes will spawn randomly in the map. Win by surviving a certain amount of time.</p>
-      <p>2. Stones are Your Weapon: Use stones wisely. Your powerful skill allows you to kill slimes with one hit.</p>
-      <p>3. Try Not to Miss: Stones are powerful but scarce. Gain them slowly over time or by killing slimes.</p>
-      <p>4. Stay Vigilant: Slimes appear without warning. Listen, watch, and keep moving, or they'll overwhelm you.</p>
-      <p>5. Strike Quickly: Slimes move quickly. Let none get too close.</p>
+      <h3>1. Survive the Horde: Slimes will spawn randomly in the map. Win by surviving a certain amount of time.</h3>
+      <h3>2. Stones are Your Weapon: Use stones wisely. Your powerful skill allows you to kill slimes with one hit.</h3>
+      <h3>3. Try Not to Miss: Stones are powerful but scarce. Gain them slowly over time or by killing slimes.</h3>
+      <h3>4. Stay Vigilant: Slimes appear without warning. Listen, watch, and keep moving, or they'll overwhelm you.</h3>
+      <h3>5. Strike Quickly: Slimes move quickly. Let none get too close.</h3>
       <button onclick="closeInstructions()">Close</button>
     </div>
   </div>
@@ -240,6 +365,24 @@
       const selectedCharacter = document.querySelector(`.character[data-id="${character}"]`);
       selectedCharacter.classList.add('selected');
     }
+    function selectDifficulty(difficulty) {
+      const difficultyElements = document.querySelectorAll('.difficulty');
+      difficultyElements.forEach(element => element.classList.remove('selected'));
+      const selectedDifficulty = document.querySelector(`.difficulty[data-id="${difficulty}"]`);
+      selectedDifficulty.classList.add('selected');
+    }
+    function confirmDifficulty() {
+      const selectedDifficulty = document.querySelector('.difficulty.selected');
+      if (selectedDifficulty) {
+        localStorage.setItem('gameDifficulty', selectedDifficulty.dataset.id);
+        window.location.href = './game.html';
+      } else {
+        alert('Please select a difficulty.');
+      }
+    }
+    function closeCharacterModal() {
+      document.getElementById('characterOverlay').style.display = 'none';
+    }
     function confirmCharacter() {
       const selectedCharacter = document.querySelector('.character.selected');
       if (selectedCharacter) {
@@ -250,7 +393,6 @@
         alert('Please select a character.');
       }
     }
-
     function closeRanking() {
       document.getElementById('rankingOverlay').style.display = 'none';
     }
@@ -280,12 +422,6 @@
       document.getElementById("difficultyOverlay").style.display = "none";
     }
 
-    function confirmDifficulty() {
-      const selectedDifficulty = document.querySelector('input[name="difficulty"]:checked').value;
-      localStorage.setItem("gameDifficulty", selectedDifficulty);
-      window.location.href = "game.html";
-    }
-
     // Instructions Modal Functions
     function viewInstructions() {
       document.getElementById("instructionsOverlay").style.display = "flex";
@@ -294,10 +430,14 @@
     function closeInstructions() {
       document.getElementById("instructionsOverlay").style.display = "none";
     }
+    function closeControls() {
+      document.getElementById("controlsOverlay").style.display = "none";
+    }
 
     // Settings Placeholder
     function openSettings() {
       console.log("Opening settings...");
+      document.getElementById("controlsOverlay").style.display = "flex";
     }
     
   </script>

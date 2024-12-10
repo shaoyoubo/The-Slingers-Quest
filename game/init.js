@@ -64,6 +64,9 @@ let sharedState = {
     lastshake: 0,
     shake: 0.05,
     loadplace: './Characters/Adventurer1.glb',
+    playerspeed: 25,
+    stonecapacity: 5,
+    stonerecovery: 1,
 };
 
 export { scene, renderer, clock, sharedState };

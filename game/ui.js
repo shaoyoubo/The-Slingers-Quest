@@ -61,7 +61,7 @@ class EnergyManager {
         }
     }
 }
-export const energyManager = new EnergyManager(100, 1, 20);
+export const energyManager = new EnergyManager(20*sharedState.stonecapacity, sharedState.stonerecovery, 20);
 
 function initializeViewToggle() {
     const toggleViewButton = document.getElementById('toggle-view');

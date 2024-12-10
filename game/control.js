@@ -4,6 +4,7 @@ import { inputManager } from './InputManager.js'; // 键盘输入管理器
 import { stoneThrower } from './loadClasses.js'; // 投石功能
 import { enemiesGenerator } from './loadClasses.js'; // 生成僵尸
 import {energyManager,initializeViewToggle} from './ui.js';
+import { update } from 'three/examples/jsm/libs/tween.module.js';
 const GRAVITY = 30;
 const STEPS_PER_FRAME = 5;
 const Enemy_Speed = 0.01;
@@ -15,7 +16,7 @@ let isPaused = false;
 
 export function controls(deltaTime, player) {
     
-    const speedDelta = deltaTime * (player.onFloor ? 25 : 8);
+    const speedDelta = deltaTime * (player.onFloor ? sharedState.playerspeed : 8);
 
     if (inputManager.keyStates['KeyW']) {
         player.velocity.add(player.getForwardVector().multiplyScalar(speedDelta));
@@ -66,6 +67,8 @@ export function updatePlayer(deltaTime, player, cameraDistance) {
         sharedState.playerModel.position.copy(playerPosition);
     }
     const dis = player.collider.end.distanceTo(player.camera.position);
+    if(Math.abs(dis-Math.abs(cameraDistance))>0.1)
+        updateImmediate(player);
     if(performance.now() - sharedState.lastthrow > 500 || performance.now()-sharedState.starttime < 1000)
     {
     player.camera.position.copy(
@@ -356,8 +359,9 @@ export function animate(renderer, scene, player, stats, cameraDistance) {
         return;
     }
     const now = performance.now();
-    sharedState.score = Math.floor(Math.max(sharedState.difficulty * (6*energyManager.hits-2*sharedState.totalhits),0)
-    +6*(Math.pow((now-sharedState.starttime)/1000+64,2/3)-16));
+
+    sharedState.score = Math.floor(sharedState.difficulty *Math.max( (3*energyManager.hits-sharedState.totalhits),0.3*(energyManager.hits-sharedState.totalhits))
+    +50*(Math.pow((now-sharedState.starttime)/1000+64,2/3)-16));
     
 
     const deltaTime = Math.min(0.03, clock.getDelta()) / STEPS_PER_FRAME;
