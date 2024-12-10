@@ -1,4 +1,6 @@
 import { sharedState } from "./init";
+import {updateImmediate} from './control.js';
+import {player} from './player.js';
 class EnergyManager {
     constructor(maxEnergy, energyRecoveryRate, energyCostPerThrow) {
         this.maxEnergy = maxEnergy; // 能量最大值
@@ -76,7 +78,7 @@ function initializeViewToggle() {
             toggleViewButton.setAttribute('data-view', 'third'); // 更新视角状态
             toggleViewButton.textContent = 'Third Person View';
         }
-
+        updateImmediate(player);
     });
 }
 

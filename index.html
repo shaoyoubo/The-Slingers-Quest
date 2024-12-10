@@ -13,7 +13,35 @@
       margin: 0;
       color: #fff;
     }
+    .character {
+  display: inline-block;
+  text-align: center;
+  margin: 10px;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: transform 0.2s, border 0.2s;
+}
 
+.character img {
+  width: 150px; /* 固定宽度 */
+  height: auto; /* 保持宽高比 */
+  object-fit: contain; /* 避免图片变形 */
+}
+
+.character p {
+  margin: 5px 0;
+  font-size: 1em;
+  color: #fff;
+}
+
+.character:hover {
+  transform: scale(1.1);
+  border: 2px solid #ffd700; /* Highlight on hover */
+}
+
+.character.selected {
+  border: 2px solid #32cd32; /* Highlight when selected */
+}
     .background {
       position: absolute;
       top: 0;
@@ -109,11 +137,12 @@
   </style>
 </head>
 <body>
+
   <div class="background"></div>
 
   <div class="menu">
     <h1>The Slinger's Quest: Rise of the Slimes</h1>
-    <button onclick="showDifficultyModal()">Start Game</button>
+    <button onclick="showCharacterModal()">Start Game</button>
     <button onclick="openSettings()">Settings</button>
     <button onclick="viewInstructions()">Instructions</button>
     <button onclick="viewRanking()">Ranking</button>
@@ -128,8 +157,30 @@
       <button onclick="clearScores()">Clear Scores</button>
     </div>
   </div>
-
+  <div id="characterOverlay" class="overlay">
+    <div class="modal">
+      <h2>Choose Your Character</h2>
+      <div id="character-options">
+        <div class="character" onclick="selectCharacter('knight')" data-id="knight">
+          <img src="./Assets/Characters/p1.png" alt="Knight">
+          <p>Knight</p>
+        </div>
+        <div class="character" onclick="selectCharacter('mage')" data-id="mage">
+          <img src="./Assets/Characters/p2.png" alt="Mage">
+          <p>Mage</p>
+        </div>
+        <div class="character" onclick="selectCharacter('archer')" data-id="archer">
+          <img src="./Assets/Characters/p3.png" alt="Archer">
+          <p>Archer</p>
+        </div>
+      </div>
+      <button onclick="confirmCharacter()">Confirm</button>
+      <button onclick="closeCharacterModal()">Cancel</button>
+    </div>
+  </div>
+  
   <!-- Difficulty Modal -->
+   
   <div id="difficultyOverlay" class="overlay">
     <div class="modal">
       <h2>Choose Difficulty</h2>
@@ -180,6 +231,25 @@
       loadScores();
       document.getElementById('rankingOverlay').style.display = 'flex';
     }
+    function showCharacterModal() {
+      document.getElementById('characterOverlay').style.display = 'flex';
+    }
+    function selectCharacter(character) {
+      const characterElements = document.querySelectorAll('.character');
+      characterElements.forEach(element => element.classList.remove('selected'));
+      const selectedCharacter = document.querySelector(`.character[data-id="${character}"]`);
+      selectedCharacter.classList.add('selected');
+    }
+    function confirmCharacter() {
+      const selectedCharacter = document.querySelector('.character.selected');
+      if (selectedCharacter) {
+        localStorage.setItem('gameCharacter', selectedCharacter.dataset.id);
+        showDifficultyModal();
+        document.getElementById('characterOverlay').style.display = 'none';
+      } else {
+        alert('Please select a character.');
+      }
+    }
 
     function closeRanking() {
       document.getElementById('rankingOverlay').style.display = 'none';
@@ -199,6 +269,9 @@
         console.log('播放音乐失败:', error);
       });
     });
+    function showCharacterModal() {
+      document.getElementById("characterOverlay").style.display = "flex";
+    }
     function showDifficultyModal() {
       document.getElementById("difficultyOverlay").style.display = "flex";
     }

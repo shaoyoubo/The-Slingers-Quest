@@ -38,7 +38,8 @@ class Player {
             if(this.onFloor && !before)
             {
                 sharedState.lastthrow = performance.now();
-                sharedState.shake = 0.05;
+                if(sharedState.cameraDistance < 0)
+                    sharedState.shake = 0.05;
                 console.log("drop!");
             }
             // 如果玩家不在地面上，修正玩家速度
@@ -87,7 +88,7 @@ export const player = new Player();
 const loader = new GLTFLoader().setPath( '../Assets/' );
 
 export function loadPlayerModel() {
-    loader.load('./Characters/Adventurer.glb', (gltf) => {
+    loader.load(sharedState.loadplace, (gltf) => {
         const model = gltf.scene;
         sharedState.playerModel = model;
         model.scale.set(0.2, 0.2, 0.2);

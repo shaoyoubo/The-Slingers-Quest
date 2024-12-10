@@ -28,7 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // 根据难度调整游戏逻辑
     if (difficulty === "easy") {
       console.log("Easy mode selected: Slimes spawn slower, more stones.");
-      sharedState.generationInterval = 1500;
+      sharedState.generationInterval = 15000000;
         sharedState.EnemySpeed = 0.007;
         sharedState.difficulty = 50;
       // 设置简单模式参数
@@ -43,7 +43,16 @@ document.addEventListener("DOMContentLoaded", () => {
         sharedState.difficulty = 100;
       // 设置困难模式参数
     }
-  
+    const character = localStorage.getItem("gameCharacter") || "knight";
+    if (character === "knight") {
+      sharedState.loadplace = './Characters/Adventurer1.glb';
+    }
+    else if(character === "mage") {
+      sharedState.loadplace = './Characters/Adventurer2.glb';
+    }
+    else {
+      sharedState.loadplace = './Characters/Adventurer3.glb';
+    }
     // 开始游戏
     main();
   });

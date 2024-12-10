@@ -63,6 +63,7 @@ let sharedState = {
     lastthrow: 0,
     lastshake: 0,
     shake: 0.05,
+    loadplace: './Characters/Adventurer1.glb',
 };
 
 export { scene, renderer, clock, sharedState };

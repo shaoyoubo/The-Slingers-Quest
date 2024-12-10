@@ -12,6 +12,7 @@ const vector2 = new THREE.Vector3();
 const vector3 = new THREE.Vector3();
 let isPaused = false;
 
+
 export function controls(deltaTime, player) {
     
     const speedDelta = deltaTime * (player.onFloor ? 25 : 8);
@@ -37,6 +38,11 @@ export function controls(deltaTime, player) {
     }
 }
 
+export function updateImmediate(player) {
+    player.camera.position.copy(
+        player.collider.end.clone().sub(player.direction.clone().multiplyScalar(sharedState.cameraDistance)));
+    }
+
 export function updatePlayer(deltaTime, player, cameraDistance) {
     let damping = Math.exp(-4 * deltaTime) - 1;
     
@@ -59,8 +65,8 @@ export function updatePlayer(deltaTime, player, cameraDistance) {
     if (sharedState.playerModel) {
         sharedState.playerModel.position.copy(playerPosition);
     }
-
-    if(performance.now() - sharedState.lastthrow > 1000 || performance.now()-sharedState.starttime < 1000)
+    const dis = player.collider.end.distanceTo(player.camera.position);
+    if(performance.now() - sharedState.lastthrow > 500 || performance.now()-sharedState.starttime < 1000)
     {
     player.camera.position.copy(
         player.collider.end.clone().sub(player.direction.clone().multiplyScalar(cameraDistance))
@@ -73,7 +79,7 @@ export function updatePlayer(deltaTime, player, cameraDistance) {
 }
 
 export function ShakeCamera(player) {
-    if(performance.now() - sharedState.lastthrow > 1000)
+    if(performance.now() - sharedState.lastthrow > 500)
         return;
     if(performance.now() - sharedState.lastshake < 4)
         return;
@@ -87,7 +93,7 @@ export function ShakeCamera(player) {
     cameraPosition.add(cameraShake);
     camera.position.copy(cameraPosition);
     sharedState.lastshake = performance.now();
-    sharedState.shake *= 0.95;
+    sharedState.shake *= 0.9;
 }
 
 export function updateStones(deltaTime, player) {
