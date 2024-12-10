@@ -18,7 +18,7 @@ import { loadWorldModel } from './game/loadWorld.js';
 import { update } from 'three/examples/jsm/libs/tween.module.js';
 import {energyManager,initializeViewToggle} from './game/ui.js';
 import { inputManager } from './game/InputManager.js';
-import { animate,ReturntoMainMenu } from './game/control.js';
+import { animate,ReturntoMainMenu, RetryGame } from './game/control.js';
 import { loadAssets } from './game/loadAssets.js';
 import { loadClasses } from './game/loadClasses.js';
 document.addEventListener("DOMContentLoaded", () => {
@@ -87,6 +87,7 @@ async function main(){
     
     initializeViewToggle();
     ReturntoMainMenu();
+    RetryGame();
     sharedState.starttime = performance.now();
     function gameLoop() {
         animate(renderer, scene, player, stats, sharedState.cameraDistance);
@@ -104,5 +105,9 @@ window.onload = () => {
     setInterval(() => {
         energyManager.recoverEnergy();
     }, 100); // 每 100ms 恢复能量
+    const scoreDisplay = document.getElementById('score-display');
+    setInterval(() => {
+        scoreDisplay.textContent = `Score: ${sharedState.score}`;
+    }, 100); // 每 100ms 更新一次分数显示
 };
 

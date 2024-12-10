@@ -172,12 +172,51 @@ function playerEnemyCollision(enemy, player) {
     }
     return false; // Return false if no collision
 }
-function showGameOverPopup() {
+
+// 定义上传分数的函数
+function uploadScore() {
+    const username = document.getElementById('username').value;
+    const score = sharedState.score; // 假设 sharedState.score 是当前分数
+  
+    if (username) {
+      const scoreData = { username, score };
+      let scores = JSON.parse(localStorage.getItem('scores')) || [];
+      scores.push(scoreData);
+      localStorage.setItem('scores', JSON.stringify(scores));
+      alert('Score uploaded successfully!');
+    } else {
+      alert('Please enter your name.');
+    }
+  }
+  
+  function showGameOverPopup() {
     const popup = document.getElementById('game-over-popup');
-    document.getElementById('score').innerText = Math.floor(Math.max(sharedState.difficulty * (6*energyManager.hits-2*sharedState.totalhits),0)
-    +6*(Math.pow((performance.now()-sharedState.starttime)/1000+64,2/3)-16));
+    document.getElementById('score').innerText = sharedState.score;
     popup.classList.remove('hidden'); // 显示弹窗
+  
+    const uploadButton = document.getElementById('upload-score');
+  
+    // 先移除可能存在的旧的事件监听器
+    uploadButton.removeEventListener('click', uploadScore);
+  
+    // 添加新的事件监听器
+    uploadButton.addEventListener('click', uploadScore);
+  }
+  
+
+function loadScores() {
+  const scores = JSON.parse(localStorage.getItem('scores')) || [];
+  const rankingList = document.getElementById('ranking-list');
+  rankingList.innerHTML = '';
+  scores.sort((a, b) => b.score - a.score).forEach(score => {
+    const listItem = document.createElement('li');
+    listItem.textContent = `${score.username}: ${score.score}`;
+    rankingList.appendChild(listItem);
+  });
 }
+
+// 在页面加载时调用 loadScores 函数
+window.onload = loadScores;
 
 function ReturntoMainMenu() {
     const toggleViewButton = document.getElementById('ReturnMenu');
@@ -194,6 +233,23 @@ function ReturntoMainMenu() {
         window.location.href = "../index.html";
     });
 }
+
+function RetryGame() {
+    const toggleViewButton = document.getElementById('retry-game');
+    toggleViewButton.addEventListener('click', () => {
+        energyManager.hits = 0;
+        for (const enemy of enemiesGenerator.enemies) {
+            enemy.collider.center.set(10, -100, 0);
+            enemy.velocity.set(0, 0, 0);
+        }
+        for (const stone of stoneThrower.stones) {
+            stone.collider.center.set(0, -100, 0);
+            stone.velocity.set(0, 0, 0);
+        }
+        window.location.href = "../game.html";
+    });
+  }
+
 function checkPlayerEnemyCollisions(player) {
     for (const enemy of enemiesGenerator.enemies) {
         if (playerEnemyCollision(enemy,player)) {
@@ -257,6 +313,9 @@ export function animate(renderer, scene, player, stats, cameraDistance) {
         return;
     }
     const now = performance.now();
+    sharedState.score = Math.floor(Math.max(sharedState.difficulty * (6*energyManager.hits-2*sharedState.totalhits),0)
+    +6*(Math.pow((now-sharedState.starttime)/1000+64,2/3)-16));
+    
 
     const deltaTime = Math.min(0.03, clock.getDelta()) / STEPS_PER_FRAME;
 
@@ -283,4 +342,4 @@ export function pauseGame() {
 export function resumeGame() {
     isPaused = false;
 }
-export {ReturntoMainMenu, isPaused};
+export {ReturntoMainMenu, RetryGame, isPaused};

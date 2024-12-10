@@ -50,16 +50,18 @@
     .settings-container button:hover {
       background: #777;
     }
-	.drag-btn {
-    position: absolute;
-    top: 50px;
-    left: 50px;
-    cursor: grab;
-    background-color: lightblue;
-    padding: 10px;
-    border-radius: 5px;
-    user-select: none;
-  }
+
+    .drag-btn {
+      position: absolute;
+      top: 50px;
+      left: 50px;
+      cursor: grab;
+      background-color: lightblue;
+      padding: 10px;
+      border-radius: 5px;
+      user-select: none;
+    }
+
     .settings-button {
       position: fixed;
       top: 20px;
@@ -75,77 +77,115 @@
     .settings-button:hover {
       background: #555;
     }
+
     #energy-bar-container {
-  position: fixed;
-  top: 20px;
-  left: 20px;
-  width: 200px;
-  height: 20px;
-  background-color: #333;
-  border: 2px solid #555;
-  border-radius: 5px;
-}
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      width: 200px;
+      height: 20px;
+      background-color: #333;
+      border: 2px solid #555;
+      border-radius: 5px;
+    }
 
-#energy-bar {
-  width: 100%;
-  height: 100%;
-  background-color: green;
-  border-radius: 5px;
-  transition: width 0.2s, background-color 0.2s;
-}
-#stone-count {
-  position: relative;
-  z-index: 1;
-  font-size: 14px;
-  font-weight: bold;
-  color: white;
-  pointer-events: none;
-}
-/* 弹窗背景遮罩 */
-.popup {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.7); /* 半透明黑色 */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-}
+    #energy-bar {
+      width: 100%;
+      height: 100%;
+      background-color: green;
+      border-radius: 5px;
+      transition: width 0.2s, background-color 0.2s;
+    }
 
-/* 隐藏弹窗 */
-.hidden {
-    display: none;
-}
+    #stone-count {
+      position: relative;
+      z-index: 1;
+      font-size: 14px;
+      font-weight: bold;
+      color: white;
+      pointer-events: none;
+    }
 
-/* 弹窗内容 */
-.popup-content {
-    background: #ffffff; /* 白色背景 */
-    padding: 20px;
-    border-radius: 10px;
-    text-align: center;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
+    /* 弹窗背景遮罩 */
+    .popup {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7); /* 半透明黑色 */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
 
-.popup-content h1 {
-    margin: 0 0 20px;
-    color: #ff0000; /* 红色文字 */
-}
+    /* 隐藏弹窗 */
+    .hidden {
+      display: none;
+    }
 
-.popup-content button {
-    padding: 10px 20px;
-    background: #007bff;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
+    /* 弹窗内容 */
+    .popup-content {
+      background: #1a1a1a; /* 深色背景 */
+      padding: 30px;
+      border-radius: 15px;
+      text-align: center;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+      color: #e0e0e0; /* 浅色文字 */
+    }
 
-.popup-content button:hover {
-    background: #0056b3;
-}
+    .popup-content h1 {
+      margin: 0 0 20px;
+      color: #ff4500; /* 橙红色文字 */
+    }
+
+    .popup-content input[type="text"] {
+      width: 80%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #555;
+      border-radius: 5px;
+      background: #333;
+      color: #fff;
+    }
+
+    .popup-content button {
+      padding: 10px 20px;
+      background: linear-gradient(145deg, #6b6b6b, #4a4a4a);
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin: 5px;
+      transition: background 0.3s;
+    }
+
+    .popup-content button:hover {
+      background: linear-gradient(145deg, #4a4a4a, #6b6b6b);
+    }
+
+    .popup-content .score {
+      color: #ffd700; /* 金色文字 */
+      font-size: 1.2em;
+      margin: 20px 0;
+    }
+
+    #score-display {
+      position: fixed;
+      top: 70px; /* 放在能量条下面 */
+      left: 20px;
+      width: 200px;
+      height: 20px;
+      background-color: #333;
+      border: 2px solid #555;
+      border-radius: 5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 16px;
+    }
   </style>
 </head>
 <body>
@@ -157,16 +197,16 @@
     <div class="settings-container">
       <h2>Game Settings</h2>
       <p>Adjust game settings here:</p>
-	  <button id="toggle-view" data-view="first">Third Person View</button>
+      <button id="toggle-view" data-view="first">Third Person View</button>
       <button onclick="closeSettings()">Close</button>
     </div>
   </div>
   <div id="energy-bar-container">
     <div id="energy-bar"></div>
     Stone Count:<span id="stone-count">5</span>
-
     Total Hits:<span id="hits-count">0</span>
   </div>
+  <div id="score-display">Score: 0</div>
   <audio id="background-music" src="./Assets/Music/bgm.mp3" loop autoplay muted></audio>
   <script type="module">
     window.addEventListener('load', function() {
@@ -195,16 +235,19 @@
     };
   </script>
 
-<div id="game-over-popup" class="popup hidden">
-  <script type="module" src="./game/control.js"></script>
-  <div class="popup-content">
+  <div id="game-over-popup" class="popup hidden">
+    <script type="module" src="./game/control.js"></script>
+    <div class="popup-content">
       <h1>You Died!</h1>
-      <div style="color: #FFD700;">Your Score: <span id="score">0</span></div>
-	  <button id="ReturnMenu" data-view="first">Return to Main Menu</button>
+      <div class="score">Your Score: <span id="score">0</span></div>
+      <input type="text" id="username" placeholder="Want to show off? Enter your name">
+      <button id="upload-score">Upload Score</button>
+      <button id="retry-game">Retry</button>
+      <button id="ReturnMenu" data-view="first">Return to Main Menu</button>
+    </div>
   </div>
-</div>
 
-<div id="container"></div>
-<script type="module" src="/main.js"></script>
+  <div id="container"></div>
+  <script type="module" src="/main.js"></script>
 </body>
 </html>

@@ -59,6 +59,7 @@ let sharedState = {
     totalhits: 0,
     starttime: 0,
     difficulty: 0,
+    score: 0,
 };
 
 export { scene, renderer, clock, sharedState };
