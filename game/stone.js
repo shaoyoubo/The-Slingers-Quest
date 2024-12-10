@@ -68,6 +68,7 @@ class StoneThrower {
         this.stoneIdx = (this.stoneIdx + 1) % this.stones.length;
         sharedState.lastthrow = performance.now();
         sharedState.lastshake = performance.now();
+        sharedState.shake = 0.05;
         }
     }
 

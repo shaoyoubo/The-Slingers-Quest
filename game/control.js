@@ -44,7 +44,7 @@ export function updatePlayer(deltaTime, player, cameraDistance) {
         player.velocity.y -= GRAVITY * deltaTime;
         damping *= 0.1;
     }
-
+    const PreviousPosition = player.collider.end.clone();
     player.getForwardVector();
     player.velocity.addScaledVector(player.velocity, damping);
 
@@ -60,27 +60,34 @@ export function updatePlayer(deltaTime, player, cameraDistance) {
         sharedState.playerModel.position.copy(playerPosition);
     }
 
+    if(performance.now() - sharedState.lastthrow > 1000 || performance.now()-sharedState.starttime < 1000)
+    {
     player.camera.position.copy(
         player.collider.end.clone().sub(player.direction.clone().multiplyScalar(cameraDistance))
-    );
+    );}
+    else
+    {
+        const move = player.collider.end.clone().sub(PreviousPosition);
+        player.camera.position.addScaledVector(move,1);
+    }
 }
 
 export function ShakeCamera(player) {
-    if(performance.now() - sharedState.lastthrow > 2000)
+    if(performance.now() - sharedState.lastthrow > 1000)
         return;
-    if(performance.now() - sharedState.lastshake < 5)
+    if(performance.now() - sharedState.lastshake < 4)
         return;
     const camera = player.camera;
     const cameraPosition = camera.position;
     const cameraShake = new THREE.Vector3(
-        (Math.random()-0.5)*3,
-        (Math.random()-0.5)*3,
-        (Math.random()-0.5)*3,
+        (Math.random()-0.5)*sharedState.shake,
+        (Math.random()-0.5)*sharedState.shake,
+        (Math.random()-0.5)*sharedState.shake,
     );
     cameraPosition.add(cameraShake);
     camera.position.copy(cameraPosition);
     sharedState.lastshake = performance.now();
-    console.log("Shake!");
+    sharedState.shake *= 0.95;
 }
 
 export function updateStones(deltaTime, player) {

@@ -62,6 +62,7 @@ let sharedState = {
     score: 0,
     lastthrow: 0,
     lastshake: 0,
+    shake: 0.05,
 };
 
 export { scene, renderer, clock, sharedState };

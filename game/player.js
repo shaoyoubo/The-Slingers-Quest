@@ -29,11 +29,18 @@ class Player {
     checkCollisionsWithWorld() {
         const result = this.worldOctree.capsuleIntersect(this.collider);
 
+        const before = this.onFloor; // 保存之前的地面状态
         this.onFloor = false; // 重置地面状态
 
         if (result) {
-            this.onFloor = result.normal.y > 0; // 如果碰撞法线的 y 分量大于 0，则认为玩家在地面上
 
+            this.onFloor = result.normal.y > 0; // 如果碰撞法线的 y 分量大于 0，则认为玩家在地面上
+            if(this.onFloor && !before)
+            {
+                sharedState.lastthrow = performance.now();
+                sharedState.shake = 0.05;
+                console.log("drop!");
+            }
             // 如果玩家不在地面上，修正玩家速度
             if (!this.onFloor) {
                 this.velocity.addScaledVector(result.normal, -result.normal.dot(this.velocity));
