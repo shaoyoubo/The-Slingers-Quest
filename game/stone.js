@@ -66,6 +66,8 @@ class StoneThrower {
 
         // 更新石头索引
         this.stoneIdx = (this.stoneIdx + 1) % this.stones.length;
+        sharedState.lastthrow = performance.now();
+        sharedState.lastshake = performance.now();
         }
     }
 

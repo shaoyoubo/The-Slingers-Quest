@@ -65,6 +65,24 @@ export function updatePlayer(deltaTime, player, cameraDistance) {
     );
 }
 
+export function ShakeCamera(player) {
+    if(performance.now() - sharedState.lastthrow > 2000)
+        return;
+    if(performance.now() - sharedState.lastshake < 5)
+        return;
+    const camera = player.camera;
+    const cameraPosition = camera.position;
+    const cameraShake = new THREE.Vector3(
+        (Math.random()-0.5)*3,
+        (Math.random()-0.5)*3,
+        (Math.random()-0.5)*3,
+    );
+    cameraPosition.add(cameraShake);
+    camera.position.copy(cameraPosition);
+    sharedState.lastshake = performance.now();
+    console.log("Shake!");
+}
+
 export function updateStones(deltaTime, player) {
     stoneThrower.stones.forEach((stone) => {
         if (performance.now() - stone.time > 5000) {
@@ -75,7 +93,6 @@ export function updateStones(deltaTime, player) {
         stone.collider.center.addScaledVector(stone.velocity, deltaTime);
 
         const result = player.worldOctree.sphereIntersect(stone.collider);
-
         if (result) {
             stone.velocity.addScaledVector(result.normal, -result.normal.dot(stone.velocity) * 1.5);
             stone.collider.center.add(result.normal.multiplyScalar(result.depth));
@@ -184,9 +201,22 @@ function uploadScore() {
       scores.push(scoreData);
       localStorage.setItem('scores', JSON.stringify(scores));
       alert('Score uploaded successfully!');
+
+      energyManager.hits = 0;
+      for (const enemy of enemiesGenerator.enemies) {
+          enemy.collider.center.set(10, -100, 0);
+          enemy.velocity.set(0, 0, 0);
+      }
+      for (const stone of stoneThrower.stones) {
+          stone.collider.center.set(0, -100, 0);
+          stone.velocity.set(0, 0, 0);
+      }
+      window.location.href = "../index.html";
+      sharedState.score = 0;
     } else {
       alert('Please enter your name.');
     }
+
   }
   
   function showGameOverPopup() {
@@ -331,6 +361,7 @@ export function animate(renderer, scene, player, stats, cameraDistance) {
         teleportPlayerIfOob(player);
         enemyAndStoneCollisions();
         checkPlayerEnemyCollisions(player);
+        ShakeCamera(player);
     }
 
     renderer.render(scene, player.camera);

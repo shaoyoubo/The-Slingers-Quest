@@ -33,7 +33,7 @@ export class InputManager {
 
         document.addEventListener('mouseup', () => {
             if (document.pointerLockElement !== null) {
-                this.stoneThrower.throwStone(this.mouseTime);
+                this.stoneThrower.throwStone(this.mouseTime);   
             }
         });
 
