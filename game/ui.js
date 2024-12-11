@@ -27,7 +27,14 @@ class EnergyManager {
         // 初始更新
         this.updateEnergyBar();
     }
-
+    updateMaxEnergy(maxEnergy){
+        this.maxEnergy = maxEnergy;
+        this.currentEnergy = maxEnergy;
+        this.updateEnergyBar();
+    }
+    updateEnergyRecoveryRate(energyRecoveryRate){
+        this.energyRecoveryRate = energyRecoveryRate;
+    }
     // 更新能量条和石头计数
     updateEnergyBar() {
         const energyPercentage = (this.currentEnergy / this.maxEnergy) * 100;

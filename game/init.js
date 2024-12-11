@@ -59,6 +59,8 @@ let sharedState = {
     totalhits: 0,
     starttime: 0,
     difficulty: 0,
+    difficultyText: "Medium",
+    characterText: "Knight",
     score: 0,
     lastthrow: 0,
     lastshake: 0,

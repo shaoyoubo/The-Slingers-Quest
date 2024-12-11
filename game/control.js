@@ -207,41 +207,58 @@ function playerEnemyCollision(enemy, player) {
     return false; // Return false if no collision
 }
 
+let isUploading = false; // 标志变量，用于跟踪上传状态
+
 function uploadScore() {
+    if (isUploading) {
+        return; // 如果已经在上传过程中，则直接返回
+    }
+
     const username = document.getElementById('username').value;
     const score = sharedState.score; // 假设 sharedState.score 是当前分数
-  
+
     if (username) {
-      const scoreData = { username, score };
-      
-      fetch(`${SERVER_URL}/uploadScore`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(scoreData)
-      })
-      .then(response => response.text())
-      .then(data => {
-        alert(data);
-        energyManager.hits = 0;
-        for (const enemy of enemiesGenerator.enemies) {
-            enemy.collider.center.set(10, -100, 0);
-            enemy.velocity.set(0, 0, 0);
-        }
-        for (const stone of stoneThrower.stones) {
-            stone.collider.center.set(0, -100, 0);
-            stone.velocity.set(0, 0, 0);
-        }
-        window.location.href = "../index.html";
-        sharedState.score = 0;
-      })
-      .catch(error => {
-        console.error('Error:', error);
-        alert('Failed to upload score.');
-      });
+        const scoreData = {
+            username,
+            score,
+            difficulty: sharedState.difficultyText, // 添加难度信息
+            character: sharedState.characterText, // 添加角色信息
+            totalHits: sharedState.totalhits // 添加总命中数
+        };
+
+        isUploading = true; // 设置标志变量，表示开始上传
+
+        fetch(`${SERVER_URL}/uploadScore`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(scoreData)
+        })
+        .then(response => response.text())
+        .then(data => {
+            alert(data);
+            energyManager.hits = 0;
+            for (const enemy of enemiesGenerator.enemies) {
+                enemy.collider.center.set(10, -100, 0);
+                enemy.velocity.set(0, 0, 0);
+            }
+            for (const stone of stoneThrower.stones) {
+                stone.collider.center.set(0, -100, 0);
+                stone.velocity.set(0, 0, 0);
+            }
+            window.location.href = "../index.html";
+            sharedState.score = 0;
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Failed to upload score.');
+        })
+        .finally(() => {
+            isUploading = false; // 重置标志变量
+        });
     } else {
-      alert('Please enter your name.');
+        alert('Please enter your name.');
     }
 }
   
@@ -260,19 +277,19 @@ function uploadScore() {
   }
   
 
-function loadScores() {
-  const scores = JSON.parse(localStorage.getItem('scores')) || [];
-  const rankingList = document.getElementById('ranking-list');
-  rankingList.innerHTML = '';
-  scores.sort((a, b) => b.score - a.score).forEach(score => {
-    const listItem = document.createElement('li');
-    listItem.textContent = `${score.username}: ${score.score}`;
-    rankingList.appendChild(listItem);
-  });
-}
+// function loadScores() {
+//   const scores = JSON.parse(localStorage.getItem('scores')) || [];
+//   const rankingList = document.getElementById('ranking-list');
+//   rankingList.innerHTML = '';
+//   scores.sort((a, b) => b.score - a.score).forEach(score => {
+//     const listItem = document.createElement('li');
+//     listItem.textContent = `${score.username}: ${score.score}`;
+//     rankingList.appendChild(listItem);
+//   });
+// }
 
-// 在页面加载时调用 loadScores 函数
-window.onload = loadScores;
+// // 在页面加载时调用 loadScores 函数
+// window.onload = loadScores;
 
 function ReturntoMainMenu() {
     const toggleViewButton = document.getElementById('ReturnMenu');
@@ -363,8 +380,10 @@ function updateEnemies(deltaTime, player) {
 
 
 let lastEnemyGenerationTime = 0;
+let lastSpeedIncreaseTime = performance.now(); // 记录上一次增加速度的时间
 
-export function animate(renderer, scene, player, stats, cameraDistance) {
+
+export function animate(renderer, scene, player, cameraDistance) {
     if (isPaused) {
         return;
     }
@@ -373,6 +392,12 @@ export function animate(renderer, scene, player, stats, cameraDistance) {
     sharedState.score = Math.floor(sharedState.difficulty *Math.max( (3*energyManager.hits-sharedState.totalhits),0.3*(energyManager.hits-sharedState.totalhits))
     +50*(Math.pow((now-sharedState.starttime)/1000+64,2/3)-16));
     
+    // 每过10秒增加敌人速度
+    if (now - lastSpeedIncreaseTime > 10000) {
+        sharedState.EnemySpeed *= 1.1; // 增加10%
+        lastSpeedIncreaseTime = now; // 更新上一次增加速度的时间
+        console.log(`Enemy speed increased to: ${sharedState.EnemySpeed}`);
+    }
 
     const deltaTime = Math.min(0.03, clock.getDelta()) / STEPS_PER_FRAME;
 
@@ -392,7 +417,7 @@ export function animate(renderer, scene, player, stats, cameraDistance) {
     }
 
     renderer.render(scene, player.camera);
-    stats.update();
+    // stats.update();
 }
 export function pauseGame() {
     isPaused = true;

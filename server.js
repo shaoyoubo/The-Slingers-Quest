@@ -11,7 +11,10 @@ mongoose.connect('mongodb://127.0.0.1:27017/scoreDB', { useNewUrlParser: true, u
 
 const scoreSchema = new mongoose.Schema({
   username: String,
-  score: Number
+  score: Number,
+  difficulty: String, // 添加难度字段
+  character: String, // 添加角色字段
+  totalHits: Number // 添加总命中数字段
 });
 
 const Score = mongoose.model('Score', scoreSchema);
@@ -21,9 +24,9 @@ app.use(cors()); // 使用cors中间件
 
 // 上传分数的路由
 app.post('/uploadScore', async (req, res) => {
-  const { username, score } = req.body;
+  const { username, score, difficulty, character, totalHits } = req.body;
 
-  const newScore = new Score({ username, score });
+  const newScore = new Score({ username, score, difficulty, character, totalHits });
   try {
     await newScore.save();
     res.status(200).send('Score uploaded successfully');
@@ -44,13 +47,13 @@ app.get('/scores', async (req, res) => {
 
 // 清除所有分数的路由
 app.post('/clearScores', async (req, res) => {
-    try {
-      await Score.deleteMany({});
-      res.status(200).send('All scores cleared successfully');
-    } catch (err) {
-      res.status(500).send('Error clearing scores');
-    }
-  });
+  try {
+    await Score.deleteMany({});
+    res.status(200).send('All scores cleared successfully');
+  } catch (err) {
+    res.status(500).send('Error clearing scores');
+  }
+});
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);

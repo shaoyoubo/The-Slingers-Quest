@@ -24,25 +24,35 @@ import { loadClasses } from './game/loadClasses.js';
 document.addEventListener("DOMContentLoaded", () => {
     // 读取难度值
     const difficulty = localStorage.getItem("gameDifficulty") || "easy";
-  
-    // 根据难度调整游戏逻辑
-    if (difficulty === "easy") {
-      console.log("Easy mode selected: Slimes spawn slower, more stones.");
-      sharedState.generationInterval = 150;
-        sharedState.EnemySpeed = 0.007;
-        sharedState.difficulty = 50;
-      // 设置简单模式参数
-    } else if (difficulty === "medium") {
-      console.log("Medium mode selected: Default settings.");
-      sharedState.difficulty = 70;
-      // 设置普通模式参数
-    } else if (difficulty === "hard") {
-      console.log("Hard mode selected: Slimes spawn faster, fewer stones.");
-        sharedState.generationInterval = 700;
-        sharedState.EnemySpeed = 0.015;
-        sharedState.difficulty = 100;
-      // 设置困难模式参数
-    }
+// 创建环境光源
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.2); // 默认强度为0.2
+scene.add(ambientLight);
+
+// 根据难度调整游戏逻辑
+if (difficulty === "easy") {
+  console.log("Easy mode selected: Slimes spawn slower, more stones.");
+  sharedState.generationInterval = 1500;
+  sharedState.EnemySpeed = 0.007;
+  sharedState.difficulty = 50;
+  sharedState.difficultyText = "Easy";
+  ambientLight.intensity = 0.5; // 增强环境光照强度
+  ambientLight.color.set(0xffe4b5); // 设置温暖的颜色（浅橙色）
+} else if (difficulty === "medium") {
+  console.log("Medium mode selected: Default settings.");
+  sharedState.difficulty = 70;
+  sharedState.difficultyText = "Medium";
+  ambientLight.intensity = 0.3; // 中等环境光照强度
+  ambientLight.color.set(0xffffff); // 设置中性的颜色（白色）
+} else if (difficulty === "hard") {
+  console.log("Hard mode selected: Slimes spawn faster, fewer stones.");
+  sharedState.generationInterval = 700;
+  sharedState.EnemySpeed = 0.015;
+  sharedState.difficulty = 100;
+  sharedState.difficultyText = "Hard";
+  ambientLight.intensity = 0.2; // 减弱环境光照强度
+  ambientLight.color.set(0xadd8e6); // 设置冷色调（浅蓝色）
+}
+
     const character = localStorage.getItem("gameCharacter") || "knight";
     if (character === "knight") {
       sharedState.loadplace = './Characters/Adventurer1.glb';
@@ -52,12 +62,21 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     else if(character === "mage") {
       sharedState.loadplace = './Characters/Adventurer2.glb';
+      sharedState.playerspeed = 40;
+      sharedState.stonecapacity = 3;
+      sharedState.stonerecovery = 0.8;
+      sharedState.characterText = "Mage";
       // fill in the rest of the character stats
     }
     else {
       sharedState.loadplace = './Characters/Adventurer3.glb';
+      sharedState.playerspeed = 15;
+      sharedState.stonecapacity = 7;
+      sharedState.stonerecovery = 1.5;
+      sharedState.characterText = "Archer";
       // fill in the rest of the character stats
     }
+
     // 开始游戏
     main();
   });
@@ -80,10 +99,10 @@ async function main(){
     inputManager.init(player, stoneThrower, container, renderer);
     container.appendChild( renderer.domElement );
     
-    const stats = new Stats();
-    stats.domElement.style.position = 'absolute';
-    stats.domElement.style.top = '0px';
-    container.appendChild( stats.domElement );
+    // const stats = new Stats();
+    // stats.domElement.style.position = 'absolute';
+    // stats.domElement.style.top = '0px';
+    // container.appendChild( stats.domElement );
     
     const NUM_SPHERES = 100;
     const SPHERE_RADIUS = 0.2;
@@ -102,10 +121,13 @@ async function main(){
     initializeViewToggle();
     ReturntoMainMenu();
     RetryGame();
-    sharedState.starttime = performance.now();
+    energyManager.updateMaxEnergy(20*sharedState.stonecapacity);
+    energyManager.updateEnergyRecoveryRate(sharedState.stonerecovery);
     function gameLoop() {
-        animate(renderer, scene, player, stats, sharedState.cameraDistance);
+        animate(renderer, scene, player, sharedState.cameraDistance);
     }
+    sharedState.starttime = performance.now();
+
     renderer.setAnimationLoop( gameLoop );
     
     
