@@ -12,6 +12,7 @@ const vector1 = new THREE.Vector3();
 const vector2 = new THREE.Vector3();
 const vector3 = new THREE.Vector3();
 let isPaused = false;
+const SERVER_URL = 'https://78b4-2402-f000-2-d001-4c6d-a839-e391-5840.ngrok-free.app';
 
 
 export function controls(deltaTime, player) {
@@ -206,34 +207,43 @@ function playerEnemyCollision(enemy, player) {
     return false; // Return false if no collision
 }
 
-// 定义上传分数的函数
 function uploadScore() {
     const username = document.getElementById('username').value;
     const score = sharedState.score; // 假设 sharedState.score 是当前分数
   
     if (username) {
       const scoreData = { username, score };
-      let scores = JSON.parse(localStorage.getItem('scores')) || [];
-      scores.push(scoreData);
-      localStorage.setItem('scores', JSON.stringify(scores));
-      alert('Score uploaded successfully!');
-
-      energyManager.hits = 0;
-      for (const enemy of enemiesGenerator.enemies) {
-          enemy.collider.center.set(10, -100, 0);
-          enemy.velocity.set(0, 0, 0);
-      }
-      for (const stone of stoneThrower.stones) {
-          stone.collider.center.set(0, -100, 0);
-          stone.velocity.set(0, 0, 0);
-      }
-      window.location.href = "../index.html";
-      sharedState.score = 0;
+      
+      fetch(`${SERVER_URL}/uploadScore`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(scoreData)
+      })
+      .then(response => response.text())
+      .then(data => {
+        alert(data);
+        energyManager.hits = 0;
+        for (const enemy of enemiesGenerator.enemies) {
+            enemy.collider.center.set(10, -100, 0);
+            enemy.velocity.set(0, 0, 0);
+        }
+        for (const stone of stoneThrower.stones) {
+            stone.collider.center.set(0, -100, 0);
+            stone.velocity.set(0, 0, 0);
+        }
+        window.location.href = "../index.html";
+        sharedState.score = 0;
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('Failed to upload score.');
+      });
     } else {
       alert('Please enter your name.');
     }
-
-  }
+}
   
   function showGameOverPopup() {
     const popup = document.getElementById('game-over-popup');

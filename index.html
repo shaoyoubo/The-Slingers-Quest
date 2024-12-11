@@ -331,30 +331,60 @@ button:active {
   </div>
   <audio id="background-music" src="./Assets/Music/bgm.mp3" loop autoplay muted></audio>
   <script>
+    const SERVER_URL = 'https://78b4-2402-f000-2-d001-4c6d-a839-e391-5840.ngrok-free.app';
     
-    function loadScores() {
-      const scores = JSON.parse(localStorage.getItem('scores')) || [];
-      const rankingList = document.getElementById('ranking-list');
-      rankingList.innerHTML = '';
-      scores.sort((a, b) => b.score - a.score).forEach(score => {
-        const listItem = document.createElement('li');
-        listItem.textContent = `${score.username}: ${score.score}`;
-        rankingList.appendChild(listItem);
-      });
+function clearScores() {
+  const password = prompt('Please enter the password to clear scores:');
+  if (password === 'qwerty') {
+    fetch(`${SERVER_URL}/clearScores`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ password })
+    })
+    .then(response => response.text())
+    .then(data => {
+      alert(data);
+      viewRanking(); // 重新加载排行榜
+    })
+    .catch(error => {
+      console.error('Error clearing scores:', error);
+      alert('Failed to clear scores.');
+    });
+  } else {
+    alert('Incorrect password. Scores not cleared.');
+  }
+}
+
+function viewRanking() {
+  fetch(`${SERVER_URL}/scores`, {
+    method: 'GET',
+    mode: 'cors',
+    headers: {
+      'ngrok-skip-browser-warning': 'true'
     }
-    function clearScores() {
-      const password = prompt('Please enter the password to clear scores:');
-      if (password === 'qwerty') {
-        localStorage.removeItem('scores');
-        loadScores(); // 重新加载排行榜
-        alert('Scores cleared successfully!');
-      } else {
-        alert('Incorrect password. Scores not cleared.');
-      }
-    }
-    function viewRanking() {
-      loadScores();
-      document.getElementById('rankingOverlay').style.display = 'flex';
+  })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.json();
+        })
+        .then(scores => {
+          const rankingList = document.getElementById('ranking-list');
+          rankingList.innerHTML = '';
+          scores.sort((a, b) => b.score - a.score).forEach(score => {
+            const listItem = document.createElement('li');
+            listItem.textContent = `${score.username}: ${score.score}`;
+            rankingList.appendChild(listItem);
+          });
+          document.getElementById('rankingOverlay').style.display = 'flex';
+        })
+        .catch(error => {
+          console.error('Error fetching scores:', error);
+          alert('Failed to load ranking.');
+        });
     }
     function showCharacterModal() {
       document.getElementById('characterOverlay').style.display = 'flex';
@@ -397,8 +427,6 @@ button:active {
       document.getElementById('rankingOverlay').style.display = 'none';
     }
 
-    // 在页面加载时调用 loadScores 函数
-    window.onload = loadScores;
 
 
     // Difficulty Modal Functions

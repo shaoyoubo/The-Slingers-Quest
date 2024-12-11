@@ -63,35 +63,48 @@
     }
 
     .modal {
-      background-color: #333;
+      background: #1a1a1a; /* 深色背景 */
+      padding: 30px;
+      border-radius: 15px;
+      text-align: center;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+      color: #e0e0e0; /* 浅色文字 */
+    }
+
+    .modal h2 {
+      margin-top: 0;
+      color: #ffd700; /* 金色文字 */
+    }
+
+    .modal ul {
+      list-style: none;
+      padding: 0;
+      margin: 20px 0;
+    }
+
+    .modal ul li {
+      background: #333;
+      margin: 5px 0;
+      padding: 10px;
+      border-radius: 5px;
+      border: 1px solid #555;
       color: #fff;
-      padding: 20px;
-      width: 80%;
-      max-width: 400px;
-      border-radius: 8px;
-      text-align: left;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+      font-size: 1.1em;
     }
 
     .modal button {
-      margin-top: 20px;
-      padding: 10px;
-      background-color: #666;
+      padding: 10px 20px;
+      background: linear-gradient(145deg, #6b6b6b, #4a4a4a);
+      color: #fff;
       border: none;
       border-radius: 5px;
-      color: #fff;
       cursor: pointer;
+      margin: 5px;
+      transition: background 0.3s;
     }
 
     .modal button:hover {
-      background-color: #888;
-    }
-
-    h1 {
-      font-family: 'Georgia', sans-serif;
-      font-size: 36px;
-      font-weight: bold;
-      color: white;
+      background: linear-gradient(145deg, #4a4a4a, #6b6b6b);
     }
   </style>
 </head>
@@ -103,6 +116,17 @@
     <button onclick="showDifficultyModal()">Start Game</button>
     <button onclick="openSettings()">Settings</button>
     <button onclick="viewInstructions()">Instructions</button>
+    <button onclick="viewRanking()">Ranking</button>
+  </div>
+
+  <!-- Ranking Modal -->
+  <div id="rankingOverlay" class="overlay">
+    <div class="modal">
+      <h2>Ranking</h2>
+      <ul id="ranking-list"></ul>
+      <button onclick="closeRanking()">Close</button>
+      <button onclick="clearScores()">Clear Scores</button>
+    </div>
   </div>
 
   <!-- Difficulty Modal -->
@@ -131,6 +155,40 @@
   </div>
   <audio id="background-music" src="./Assets/Music/bgm.mp3" loop autoplay muted></audio>
   <script>
+    
+    function loadScores() {
+      const scores = JSON.parse(localStorage.getItem('scores')) || [];
+      const rankingList = document.getElementById('ranking-list');
+      rankingList.innerHTML = '';
+      scores.sort((a, b) => b.score - a.score).forEach(score => {
+        const listItem = document.createElement('li');
+        listItem.textContent = `${score.username}: ${score.score}`;
+        rankingList.appendChild(listItem);
+      });
+    }
+    function clearScores() {
+      const password = prompt('Please enter the password to clear scores:');
+      if (password === 'qwerty') {
+        localStorage.removeItem('scores');
+        loadScores(); // 重新加载排行榜
+        alert('Scores cleared successfully!');
+      } else {
+        alert('Incorrect password. Scores not cleared.');
+      }
+    }
+    function viewRanking() {
+      loadScores();
+      document.getElementById('rankingOverlay').style.display = 'flex';
+    }
+
+    function closeRanking() {
+      document.getElementById('rankingOverlay').style.display = 'none';
+    }
+
+    // 在页面加载时调用 loadScores 函数
+    window.onload = loadScores;
+
+
     // Difficulty Modal Functions
     window.addEventListener('load', function() {
       var audio = document.getElementById('background-music');
