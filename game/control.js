@@ -12,7 +12,7 @@ const vector1 = new THREE.Vector3();
 const vector2 = new THREE.Vector3();
 const vector3 = new THREE.Vector3();
 let isPaused = false;
-const SERVER_URL = 'https://78b4-2402-f000-2-d001-4c6d-a839-e391-5840.ngrok-free.app';
+const SERVER_URL = 'https://bb68-2402-f000-2-d001-844d-9c96-cfac-210e.ngrok-free.app';
 
 
 export function controls(deltaTime, player) {
