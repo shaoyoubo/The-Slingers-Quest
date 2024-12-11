@@ -35,6 +35,17 @@ export function controls(deltaTime, player) {
         player.velocity.add(player.getSideVector().multiplyScalar(speedDelta));
     }
 
+    if (inputManager.keyStates['KeyR']) {
+        if(performance.now()-sharedState.lastchangeview > 300)
+        {
+            if(sharedState.cameraDistance > 0)
+                sharedState.cameraDistance = -0.05;
+            else
+                sharedState.cameraDistance = 0.25;
+            sharedState.lastchangeview = performance.now();
+        }
+    }
+
     if (player.onFloor && inputManager.keyStates['Space']) {
         player.velocity.y = 10;
     }

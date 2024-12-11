@@ -69,6 +69,7 @@ let sharedState = {
     playerspeed: 25,
     stonecapacity: 5,
     stonerecovery: 1,
+    lastchangeview: 0,
 };
 
 export { scene, renderer, clock, sharedState };
