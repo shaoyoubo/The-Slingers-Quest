@@ -51,7 +51,7 @@ const clock = new THREE.Clock();
 
 let sharedState = {
     playerModel: null,
-    cameraDistance : -0.05,
+    cameraDistance : -0.06,
     gltfCharactorDict: {},
     gltfEnvironmentDict: {},
     EnemySpeed:0.01,

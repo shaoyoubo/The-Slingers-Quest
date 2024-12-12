@@ -12,6 +12,7 @@
       height: 100vh;
       margin: 0;
       color: #fff;
+      overflow: hidden;
     }
     .extra-info {
   position: absolute;
@@ -302,18 +303,18 @@ button:active {
     <div class="modal">
       <h2>Choose Your Character</h2>
       <div id="character-options">
-        <div class="character" onclick="selectCharacter('knight')" data-id="knight">
-          <img src="./Assets/Characters/p1.png" alt="Knight">
+        <div class="character" onclick="selectCharacter('adventurer')" data-id="adventurer">
+          <img src="./Assets/Characters/p1.png" alt="adventurer">
           <p>Adventurer</p>
         <div class="extra-info">The Adventurer.<br>Also the default Choice.</div>
         </div>
-        <div class="character" onclick="selectCharacter('mage')" data-id="mage">
-          <img src="./Assets/Characters/p2.png" alt="Mage">
+        <div class="character" onclick="selectCharacter('ranger')" data-id="ranger">
+          <img src="./Assets/Characters/p2.png" alt="Ranger">
           <p>Ranger</p>
         <div class="extra-info">The Ranger runs faster.<br>But throw stones slower.</div>
         </div>
-        <div class="character" onclick="selectCharacter('archer')" data-id="archer">
-          <img src="./Assets/Characters/p3.png" alt="Archer">
+        <div class="character" onclick="selectCharacter('warrior')" data-id="warrior">
+          <img src="./Assets/Characters/p3.png" alt="Warrior">
           <p>Warrior</p>
         <div class="extra-info">The Warrior runs slowly.<br>But throw stones faster.</div>
         </div>
