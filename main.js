@@ -16,7 +16,7 @@ import {player,loadPlayerModel} from './game/player.js';
 import { stoneThrower } from './game/loadClasses.js';
 import { loadWorldModel } from './game/loadWorld.js';
 import { update } from 'three/examples/jsm/libs/tween.module.js';
-import {energyManager,initializeViewToggle} from './game/ui.js';
+import {energyManagerPromise,initializeViewToggle} from './game/ui.js';
 import { inputManager } from './game/InputManager.js';
 import { animate,ReturntoMainMenu, RetryGame } from './game/control.js';
 import { loadAssets } from './game/loadAssets.js';
@@ -80,6 +80,12 @@ if (difficulty === "easy") {
     // 开始游戏
     main();
   });
+
+async function initializeEnergyManager() {
+    const energyManager = await energyManagerPromise;
+    energyManager.updateMaxEnergy(20 * sharedState.stonecapacity);
+    energyManager.updateEnergyRecoveryRate(sharedState.stonerecovery);
+}
 async function main(){
     console.log("main");
     await loadClasses();
@@ -121,8 +127,7 @@ async function main(){
     initializeViewToggle();
     ReturntoMainMenu();
     RetryGame();
-    energyManager.updateMaxEnergy(20*sharedState.stonecapacity);
-    energyManager.updateEnergyRecoveryRate(sharedState.stonerecovery);
+    initializeEnergyManager();
     function gameLoop() {
         animate(renderer, scene, player, sharedState.cameraDistance);
     }
@@ -135,15 +140,14 @@ async function main(){
 }
 //main();
 
-window.onload = () => {
-    energyManager.init('energy-bar', 'stone-count','hits-count');
-    // 模拟能量恢复的循环
-    setInterval(() => {
-        energyManager.recoverEnergy();
-    }, 100); // 每 100ms 恢复能量
-    const scoreDisplay = document.getElementById('score-display');
-    setInterval(() => {
-        scoreDisplay.textContent = `Score: ${sharedState.score}`;
-    }, 100); // 每 100ms 更新一次分数显示
+window.onload = async () => {
+  const energyManager = await energyManagerPromise;
+  // 模拟能量恢复的循环
+  setInterval(() => {
+      energyManager.recoverEnergy();
+  }, 100); // 每 100ms 恢复能量
+  const scoreDisplay = document.getElementById('score-display');
+  setInterval(() => {
+      scoreDisplay.textContent = `Score: ${sharedState.score}`;
+  }, 100); // 每 100ms 更新一次分数显示
 };
-

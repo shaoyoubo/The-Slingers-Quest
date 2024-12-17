@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-import { energyManager } from './ui';
+import { energyManagerPromise } from './ui';
 import { sharedState } from './init';
 
 // 假设这些常量是由主文件传入
@@ -45,7 +45,8 @@ class StoneThrower {
     }
 
     // 投掷石头
-    throwStone(mouseTime) {
+    async throwStone(mouseTime) {
+        const energyManager = await energyManagerPromise;
         if (energyManager.currentEnergy >= energyManager.energyCostPerThrow) {
             energyManager.currentEnergy -= energyManager.energyCostPerThrow;
             energyManager.updateEnergyBar();

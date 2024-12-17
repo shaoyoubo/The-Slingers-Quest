@@ -18,5 +18,6 @@ async function loadClasses(){
     loadPlayerModel();
     enemiesGenerator.updateScene(scene);
     console.log("enemiesGenerator updated");
+    // energyManager.updateMaxEnergy(20*sharedState.stonecapacity);
 }
 export { loadClasses, stoneThrower, enemiesGenerator};

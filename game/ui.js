@@ -68,8 +68,11 @@ class EnergyManager {
         }
     }
 }
-export const energyManager = new EnergyManager(20*sharedState.stonecapacity, sharedState.stonerecovery, 20);
-
+export const energyManagerPromise = new Promise((resolve) => {
+    const energyManager = new EnergyManager(20 * sharedState.stonecapacity, sharedState.stonerecovery, 20);
+    energyManager.init('energy-bar', 'stone-count', 'hits-count');
+    resolve(energyManager);
+});
 function initializeViewToggle() {
     const toggleViewButton = document.getElementById('toggle-view');
 

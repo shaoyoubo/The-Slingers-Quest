@@ -23,8 +23,18 @@
       display: none;
       justify-content: center;
       align-items: center;
+      
     }
 
+    h2 {
+      margin-top: 0;
+      color: #ffd700; /* 金色文字 */
+      font-family: 'Georgia'
+    }
+    h3 {
+      font-family: 'Tahoma';
+      text-align: center;
+    }
     .settings-container {
       background: #222;
       padding: 20px;
@@ -45,6 +55,8 @@
       border-radius: 5px;
       color: #fff;
       cursor: pointer;
+
+      font-family: 'Verdana', sans-serif;
     }
 
     .settings-container button:hover {
@@ -63,7 +75,10 @@
     }
 
     .settings-button {
+      display: none;
       position: fixed;
+
+      font-family: 'Verdana', sans-serif;
       top: 20px;
       right: 20px;
       padding: 10px 20px;
@@ -96,16 +111,6 @@
       border-radius: 5px;
       transition: width 0.2s, background-color 0.2s;
     }
-
-    #stone-count {
-      position: relative;
-      z-index: 1;
-      font-size: 14px;
-      font-weight: bold;
-      color: white;
-      pointer-events: none;
-    }
-
     /* 弹窗背景遮罩 */
     .popup {
       position: fixed;
@@ -171,23 +176,8 @@
       margin: 20px 0;
     }
 
-    #score-display {
-      position: fixed;
-      top: 70px; /* 放在能量条下面 */
-      left: 20px;
-      width: 200px;
-      height: 20px;
-      background-color: #333;
-      border: 2px solid #555;
-      border-radius: 5px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #fff;
-      font-size: 16px;
-    }
   </style>
-  <script type="module" crossorigin src="/assets/game-Bd18g3kc.js"></script>
+  <script type="module" crossorigin src="/assets/game-C2ydNM1a.js"></script>
 </head>
 <body>
   <!-- Setting Button -->
@@ -197,27 +187,29 @@
   <div class="settings-overlay" id="settingsOverlay">
     <div class="settings-container">
       <h2>Game Settings</h2>
-      <p>Adjust game settings here:</p>
+      <h3>Adjust game settings here</h3>
       <button id="toggle-view" data-view="first">Third Person View</button>
       <button onclick="closeSettings()">Close</button>
     </div>
   </div>
-  <div id="energy-bar-container">
+  <div id="energy-bar-container" style="font-family: 'Pacifico', cursive; font-size: 1.5em">
     <div id="energy-bar"></div>
-    Stone Count:<span id="stone-count">5</span>
-    Total Hits:<span id="hits-count">0</span>
+    Stone Count: <span id="stone-count">5</span>
+    <br>
+    Total Hits: <span id="hits-count">0</span>
+    <br>
+    <span id="score-display">0</span></div>
   </div>
-  <div id="score-display">Score: 0</div>
   <audio id="background-music" src="./Assets/Music/bgm.mp3" loop autoplay muted></audio>
 
   <div id="game-over-popup" class="popup hidden">
     <div class="popup-content">
       <h1>You Died!</h1>
-      <div class="score">Your Score: <span id="score">0</span></div>
-      <input type="text" id="username" placeholder="Want to show off? Enter your name">
-      <button id="upload-score">Upload Score</button>
-      <button id="retry-game">Retry</button>
-      <button id="ReturnMenu" data-view="first">Return to Main Menu</button>
+      <div class="score" style="font-family: 'Pacifico', cursive; font-size:1.5em">Your Score: <span id="score">0</span></div>
+      <input type="text" id="username" style="font-family: 'Verdana', sans-serif;" placeholder="Want to show off? Enter your name">
+      <button id="upload-score" style="font-family: 'Verdana', sans-serif;">Upload Score</button>
+      <button id="retry-game" style="font-family: 'Verdana', sans-serif;">Retry</button>
+      <button id="ReturnMenu" data-view="first" style="font-family: 'Verdana', sans-serif;">Return to Menu</button>
     </div>
   </div>
 
