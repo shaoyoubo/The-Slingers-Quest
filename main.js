@@ -53,19 +53,19 @@ if (difficulty === "easy") {
   ambientLight.color.set(0xadd8e6); // 设置冷色调（浅蓝色）
 }
 
-    const character = localStorage.getItem("gameCharacter") || "knight";
-    if (character === "knight") {
+    const character = localStorage.getItem("gameCharacter") || "adventurer";
+    if (character === "adventurer") {
       sharedState.loadplace = './Characters/Adventurer1.glb';
       sharedState.playerspeed = 25;
       sharedState.stonecapacity = 5;
       sharedState.stonerecovery = 1;
     }
-    else if(character === "mage") {
+    else if(character === "ranger") {
       sharedState.loadplace = './Characters/Adventurer2.glb';
       sharedState.playerspeed = 40;
       sharedState.stonecapacity = 3;
       sharedState.stonerecovery = 0.8;
-      sharedState.characterText = "Mage";
+      sharedState.characterText = "Ranger";
       // fill in the rest of the character stats
     }
     else {
@@ -73,7 +73,7 @@ if (difficulty === "easy") {
       sharedState.playerspeed = 15;
       sharedState.stonecapacity = 7;
       sharedState.stonerecovery = 1.5;
-      sharedState.characterText = "Archer";
+      sharedState.characterText = "Warrior";
       // fill in the rest of the character stats
     }
 

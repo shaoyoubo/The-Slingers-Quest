@@ -37,9 +37,12 @@ class Player {
             this.onFloor = result.normal.y > 0; // 如果碰撞法线的 y 分量大于 0，则认为玩家在地面上
             if(this.onFloor && !before)
             {
-                sharedState.lastthrow = performance.now();
-                if(sharedState.cameraDistance < 0)
-                    sharedState.shake = 0.05;
+
+        if (sharedState.cameraDistance < 0) {
+            sharedState.shake = 0.05;
+        sharedState.lastthrow = performance.now();
+        sharedState.lastshake = performance.now();
+        }
                 console.log("drop!");
             }
             // 如果玩家不在地面上，修正玩家速度

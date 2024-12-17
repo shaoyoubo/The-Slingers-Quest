@@ -43,7 +43,7 @@ export function controls(deltaTime, player) {
         if(performance.now()-sharedState.lastchangeview > 300)
         {
             if(sharedState.cameraDistance > 0)
-                sharedState.cameraDistance = -0.05;
+                sharedState.cameraDistance = -0.06;
             else
                 sharedState.cameraDistance = 0.25;
             sharedState.lastchangeview = performance.now();
@@ -83,7 +83,7 @@ export function updatePlayer(deltaTime, player, cameraDistance) {
         sharedState.playerModel.position.copy(playerPosition);
     }
     const dis = player.collider.end.distanceTo(player.camera.position);
-    if(Math.abs(dis-Math.abs(cameraDistance))>0.1)
+    if(Math.abs(dis-Math.abs(cameraDistance))>0.05)
         updateImmediate(player);
     if(performance.now() - sharedState.lastthrow > 500 || performance.now()-sharedState.starttime < 1000)
     {
