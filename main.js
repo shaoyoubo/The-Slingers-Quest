@@ -37,8 +37,8 @@ if (difficulty === "easy") {
   sharedState.difficultyText = "Easy";
   ambientLight.intensity = 0.5; // 增强环境光照强度
   ambientLight.color.set(0xffe4b5); // 设置温暖的颜色（浅橙色）
-  sharedState.currenthp = 5;
-  sharedState.maxhp = 5;
+  sharedState.currenthp = 6;
+  sharedState.maxhp = 7;
 } else if (difficulty === "medium") {
   console.log("Medium mode selected: Default settings.");
   sharedState.difficulty = 70;
@@ -46,8 +46,8 @@ if (difficulty === "easy") {
   sharedState.generationInterval = 700;
   ambientLight.intensity = 0.3; // 中等环境光照强度
   ambientLight.color.set(0xffffff); // 设置中性的颜色（白色）
-  sharedState.currenthp = 4;
-  sharedState.maxhp = 4;
+  sharedState.currenthp = 5;
+  sharedState.maxhp = 6;
 } else if (difficulty === "hard") {
   console.log("Hard mode selected: Slimes spawn faster, fewer stones.");
   sharedState.generationInterval = 500;
@@ -56,8 +56,8 @@ if (difficulty === "easy") {
   sharedState.difficultyText = "Hard";
   ambientLight.intensity = 0.2; // 减弱环境光照强度
   ambientLight.color.set(0xadd8e6); // 设置冷色调（浅蓝色）
-  sharedState.currenthp = 3;
-  sharedState.maxhp = 3;
+  sharedState.currenthp = 5;
+  sharedState.maxhp = 4;
 }
 
     const character = localStorage.getItem("gameCharacter") || "adventurer";
@@ -73,6 +73,7 @@ if (difficulty === "easy") {
       sharedState.stonecapacity = 3;
       sharedState.stonerecovery = 0.8;
       sharedState.characterText = "Ranger";
+      sharedState.maxhp -= 1;
       // fill in the rest of the character stats
     }
     else {
@@ -81,6 +82,7 @@ if (difficulty === "easy") {
       sharedState.stonecapacity = 7;
       sharedState.stonerecovery = 1.5;
       sharedState.characterText = "Warrior";
+      sharedState.maxhp += 1;
       // fill in the rest of the character stats
     }
 
@@ -162,7 +164,7 @@ window.onload = async () => {
   setInterval(() => {
     if(!isPaused)
       healthManager.recoverHealth();
-}, 1000); // 每 100ms 恢复能量
+}, 700); // 每 100ms 恢复能量
   const scoreDisplay = document.getElementById('score-display');
   setInterval(() => {
       scoreDisplay.textContent = `Score: ${sharedState.score}`;

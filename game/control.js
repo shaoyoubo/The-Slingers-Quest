@@ -26,7 +26,7 @@ healthManagerPromise.then(manager2 => {
 
 export function controls(deltaTime, player) {
     
-    const speedDelta = deltaTime * (player.onFloor ? sharedState.playerspeed : 8);
+    const speedDelta = deltaTime * (player.onFloor ? sharedState.playerspeed : 5);
 
     if (inputManager.keyStates['KeyW']) {
         player.velocity.add(player.getForwardVector().multiplyScalar(speedDelta));
@@ -56,7 +56,7 @@ export function controls(deltaTime, player) {
     }
 
     if (player.onFloor && inputManager.keyStates['Space']) {
-        player.velocity.y = 10;
+        player.velocity.y = 8;
     }
 }
 
