@@ -47,6 +47,12 @@ app.get('/scores', async (req, res) => {
 
 // 清除所有分数的路由
 app.post('/clearScores', async (req, res) => {
+  const { password } = req.body;
+  const PASSWORD = 'sybxwxzhenlihaiya'; // 预定义的密码
+
+  if (password !== PASSWORD) {
+    return res.status(403).send('Incorrect password. Scores not cleared.');
+  }
   try {
     await Score.deleteMany({});
     res.status(200).send('All scores cleared successfully');

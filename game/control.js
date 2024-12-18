@@ -252,6 +252,10 @@ function uploadScore() {
     const score = sharedState.score; // 假设 sharedState.score 是当前分数
 
     if (username) {
+        if (username.length > 10) {
+            alert('用户名不能超过10个字符。');
+            return;
+        }
         const scoreData = {
             username,
             score,
