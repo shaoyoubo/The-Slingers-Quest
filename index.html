@@ -386,26 +386,24 @@ button:active {
     
 function clearScores() {
   const password = prompt('Please enter the password to clear scores:');
-  if (password === 'sybxwxzhenlihai') {
-    fetch(`${SERVER_URL}/clearScores`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ password })
-    })
-    .then(response => response.text())
-    .then(data => {
-      alert(data);
+  fetch(`${SERVER_URL}/clearScores`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ password })
+  })
+  .then(response => response.text())
+  .then(data => {
+    alert(data);
+    if (data === 'Scores cleared successfully') {
       viewRanking(); // 重新加载排行榜
-    })
-    .catch(error => {
-      console.error('Error clearing scores:', error);
-      alert('Failed to clear scores.');
-    });
-  } else {
-    alert('Incorrect password. Scores not cleared.');
-  }
+    }
+  })
+  .catch(error => {
+    console.error('Error clearing scores:', error);
+    alert('Failed to clear scores.');
+  });
 }
 
 function viewRanking() {
