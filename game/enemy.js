@@ -43,8 +43,13 @@ class EnemiesGenerator{
         // console.log("generateEnemy");
         // console.log(this.enemyIdx);
         const enemy = this.enemies[this.enemyIdx];
-        const xx = Math.min(Math.max(x1+Math.random()*7-3.5,-14.8),19.8)
-        const zz = Math.min(Math.max(z1+Math.random()*7-3.5,-13.7),19.8)
+        let xx = Math.min(Math.max(x1+Math.random()*7-3.5,-14.8),19.8)
+        let zz = Math.min(Math.max(z1+Math.random()*7-3.5,-13.7),19.8)
+        if(Math.random() < 0.3)
+        {
+            xx = Math.min(Math.max(x1+Math.random()*20-10,-14.8),19.8)
+            zz = Math.min(Math.max(z1+Math.random()*20-10,-13.7),19.8)
+        }
         enemy.collider.center.set(xx, 7, zz);
         
         enemy.velocity.set(0, 0, 0);
