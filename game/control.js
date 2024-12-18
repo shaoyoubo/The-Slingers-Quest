@@ -3,7 +3,7 @@ import {clock, sharedState } from './init.js'; // 时钟和共享状态
 import { inputManager } from './InputManager.js'; // 键盘输入管理器
 import { stoneThrower } from './loadClasses.js'; // 投石功能
 import { enemiesGenerator } from './loadClasses.js'; // 生成僵尸
-import {energyManagerPromise,initializeViewToggle} from './ui.js';
+import {energyManagerPromise,initializeViewToggle, healthManagerPromise} from './ui.js';
 import { update } from 'three/examples/jsm/libs/tween.module.js';
 const GRAVITY = 30;
 const STEPS_PER_FRAME = 5;
@@ -14,10 +14,15 @@ const vector3 = new THREE.Vector3();
 let isPaused = false;
 const SERVER_URL = 'https://bb68-2402-f000-2-d001-844d-9c96-cfac-210e.ngrok-free.app';
 let energyManager;
+let healthManager;
 
 energyManagerPromise.then(manager => {
     energyManager = manager;
 });
+healthManagerPromise.then(manager => {
+    healthManager = manager;
+});
+
 
 export function controls(deltaTime, player) {
     
