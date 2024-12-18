@@ -12,6 +12,7 @@
       height: 100vh;
       margin: 0;
       color: #fff;
+      overflow: hidden;
     }
     .extra-info {
   position: absolute;
@@ -302,18 +303,18 @@ button:active {
     <div class="modal">
       <h2>Choose Your Character</h2>
       <div id="character-options">
-        <div class="character" onclick="selectCharacter('knight')" data-id="knight">
-          <img src="/assets/p1-CCdYa6cf.png" alt="Knight">
+        <div class="character" onclick="selectCharacter('adventurer')" data-id="adventurer">
+          <img src="/assets/p1-CCdYa6cf.png" alt="adventurer">
           <p>Adventurer</p>
         <div class="extra-info">The Adventurer.<br>Also the default Choice.</div>
         </div>
-        <div class="character" onclick="selectCharacter('mage')" data-id="mage">
-          <img src="/assets/p2-DbhgJuhV.png" alt="Mage">
+        <div class="character" onclick="selectCharacter('ranger')" data-id="ranger">
+          <img src="/assets/p2-DbhgJuhV.png" alt="Ranger">
           <p>Ranger</p>
         <div class="extra-info">The Ranger runs faster.<br>But throw stones slower.</div>
         </div>
-        <div class="character" onclick="selectCharacter('archer')" data-id="archer">
-          <img src="/assets/p3-DJwImTof.png" alt="Archer">
+        <div class="character" onclick="selectCharacter('warrior')" data-id="warrior">
+          <img src="/assets/p3-DJwImTof.png" alt="Warrior">
           <p>Warrior</p>
         <div class="extra-info">The Warrior runs slowly.<br>But throw stones faster.</div>
         </div>
@@ -381,7 +382,7 @@ button:active {
   </div>
   <audio id="background-music" src="./Assets/Music/bgm.mp3" loop autoplay muted></audio>
   <script>
-    const SERVER_URL = 'https://bb68-2402-f000-2-d001-844d-9c96-cfac-210e.ngrok-free.app';
+    const SERVER_URL = 'https://ff9f-2402-f000-3-6801-7035-2d10-37f-2bf0.ngrok-free.app';
     
 function clearScores() {
   const password = prompt('Please enter the password to clear scores:');
