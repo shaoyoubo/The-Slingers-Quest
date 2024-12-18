@@ -95,16 +95,34 @@
 
     #energy-bar-container {
       position: fixed;
-      top: 20px;
+      top: 55px;
       left: 20px;
-      width: 200px;
+      width: 300px;
       height: 20px;
       background-color: #333;
       border: 2px solid #555;
-      border-radius: 5px;
+      border-radius: 20px;
     }
 
     #energy-bar {
+      width: 100%;
+      height: 100%;
+      background-color: rgb(0, 0, 128);
+      border-radius: 5px;
+      transition: width 0.2s, background-color 0.2s;
+    }
+
+    #health-bar-container {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      width: 400px;
+      height: 30px;
+      background-color: #333;
+      border: 2px solid #555;
+      border-radius: 20px;
+    }
+    #health-bar {
       width: 100%;
       height: 100%;
       background-color: green;
@@ -191,7 +209,12 @@
       <button onclick="closeSettings()">Close</button>
     </div>
   </div>
+  <div id="health-bar-container" style="font-family: 'Pacifico', cursive; font-size: 1.5em">
+    <div id="health-bar"></div>
+    </div>
+
   <div id="energy-bar-container" style="font-family: 'Pacifico', cursive; font-size: 1.5em">
+    
     <div id="energy-bar"></div>
     Stone Count: <span id="stone-count">5</span>
     <br>

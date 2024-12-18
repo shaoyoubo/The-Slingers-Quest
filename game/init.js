@@ -70,6 +70,9 @@ let sharedState = {
     stonecapacity: 5,
     stonerecovery: 1,
     lastchangeview: 0,
+    currenthp: 5,
+    maxhp: 5,
+    invincibletime : 0,
 };
 
 export { scene, renderer, clock, sharedState };

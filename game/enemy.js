@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { Capsule } from 'three/addons/math/Capsule.js';
 import { sharedState } from './init';
+import {player} from './player.js';
 const SLIME_RADIUS = 0.25;
 
 const NUM_ZOMBIES = 50;
@@ -38,11 +39,14 @@ class EnemiesGenerator{
             });
         }
     }
-    generateEnemy(){
+    generateEnemy(x1,z1){
         // console.log("generateEnemy");
         // console.log(this.enemyIdx);
         const enemy = this.enemies[this.enemyIdx];
-        enemy.collider.center.set(30*Math.random()-13, 7, 30*Math.random()-12);
+        const xx = Math.min(Math.max(x1+Math.random()*7-3.5,-14.8),19.8)
+        const zz = Math.min(Math.max(z1+Math.random()*7-3.5,-13.7),19.8)
+        enemy.collider.center.set(xx, 7, zz);
+        
         enemy.velocity.set(0, 0, 0);
         this.enemyIdx = (this.enemyIdx + 1) % this.enemies.length;
     }

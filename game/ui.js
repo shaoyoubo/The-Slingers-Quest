@@ -41,15 +41,7 @@ class EnergyManager {
 
         // 设置能量条宽度
         this.energyBar.style.width = `${energyPercentage}%`;
-
-        // 设置颜色（渐变效果）
-        if (energyPercentage > 50) {
-            this.energyBar.style.backgroundColor = "green";
-        } else if (energyPercentage > 20) {
-            this.energyBar.style.backgroundColor = "yellow";
-        } else {
-            this.energyBar.style.backgroundColor = "red";
-        }
+        this.energyBar.style.backgroundColor="#00008B";
 
         this.updateStoneCount();
         this.hitsElement.textContent = this.hits;
@@ -91,5 +83,77 @@ function initializeViewToggle() {
         updateImmediate(player);
     });
 }
+class HealthManager {
+    constructor(maxHealth, healthRecoveryRate) {
+        this.maxHealth = maxHealth; // 最大生命值
+        this.currentHealth = maxHealth; // 初始当前生命值
+        this.healthRecoveryRate = healthRecoveryRate; // 每帧恢复的生命值
+
+        this.healthBar = null;
+        this.healthCountElement = null;
+    }
+    init(healthBarId) {
+        this.healthBar = document.getElementById(healthBarId);
+        //this.healthCountElement = document.getElementById(healthCountId);
+
+        if (!this.healthBar) {
+            console.error("HealthManager: Failed to find required DOM elements.");
+            return;
+        }
+        this.updateHealthBar();
+    }
+    updateMaxHealth(maxHealth) {
+        this.maxHealth = maxHealth;
+        this.currentHealth = maxHealth;
+        this.updateHealthBar();
+    }
+    updateHealthRecoveryRate(healthRecoveryRate) {
+        this.healthRecoveryRate = healthRecoveryRate;
+    }
+    updateHealthBar() {
+        const healthPercentage = (this.currentHealth / this.maxHealth) * 100;
+
+        // 设置血条宽度
+        this.healthBar.style.width = `${healthPercentage}%`;
+
+        // 设置颜色（渐变效果）
+        if (healthPercentage > 50) {
+            this.healthBar.style.backgroundColor = "green";
+        } else if (healthPercentage > 20) {
+            this.healthBar.style.backgroundColor = "yellow";
+        } else {
+            this.healthBar.style.backgroundColor = "red";
+        }
+
+        this.updateHealthCount();
+    }
+    updateHealthCount() {
+        //this.healthCountElement.textContent = `${this.currentHealth} / ${this.maxHealth}`; // 更新数字
+    }
+    recoverHealth() {
+        if (this.currentHealth < this.maxHealth) {
+            this.currentHealth = Math.min(this.currentHealth + this.healthRecoveryRate, this.maxHealth);
+            this.updateHealthBar();
+        }
+    }
+    takeDamage(damage) {
+        if(this.currentHealth <= damage) 
+        {
+            this.currentHealth = 0;
+            this.updateHealthBar();
+            return false;
+        }
+        this.currentHealth = this.currentHealth - damage;
+        this.updateHealthBar();
+        return true;
+    }
+}
+
+// 创建一个血条管理器的 Promise
+export const healthManagerPromise = new Promise((resolve) => {
+    const healthManager = new HealthManager(sharedState.maxhp*30, 1);
+    healthManager.init('health-bar', 'health-count');
+    resolve(healthManager);
+});
 
 export {initializeViewToggle};

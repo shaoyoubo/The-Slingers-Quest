@@ -19,8 +19,8 @@ let healthManager;
 energyManagerPromise.then(manager => {
     energyManager = manager;
 });
-healthManagerPromise.then(manager => {
-    healthManager = manager;
+healthManagerPromise.then(manager2 => {
+    healthManager = manager2;
 });
 
 
@@ -204,6 +204,8 @@ function playerStoneCollision(stone, player) {
 }
 
 function playerEnemyCollision(enemy, player) {
+    if(performance.now()-sharedState.invincibletime < 2000)
+        return false;
     if (enemy.collider.center.y < -25) 
         return false;
     if (player.collider.end.y < -25) 
@@ -219,9 +221,21 @@ function playerEnemyCollision(enemy, player) {
         const distanceSquared = point.distanceToSquared(slimeCenter);
 
         if (distanceSquared < collisionRadiusSquared) {
-            isPaused = true; // Set the game over flag
+            //isPaused = true; // Set the game over flag
             // Collision detected, show the death popup
-            return true; // Return true to indicate collision
+            if(healthManager.takeDamage(30) == false)
+            {
+                isPaused = true;
+                return true;
+            }
+                 // Return true to indicate collision
+            else
+            {
+                sharedState.invincibletime = performance.now();
+                enemy.collider.center.set(10, -100, 0);
+                enemy.velocity.set(0, 0, 0);
+                return false;
+            }
         }
     }
     return false; // Return false if no collision
@@ -346,6 +360,7 @@ function RetryGame() {
 function checkPlayerEnemyCollisions(player) {
     for (const enemy of enemiesGenerator.enemies) {
         if (playerEnemyCollision(enemy,player)) {
+            sharedState.isPaused = true;
             showGameOverPopup();
             break;
         }
@@ -423,7 +438,7 @@ export function animate(renderer, scene, player, cameraDistance) {
 
     for (let i = 0; i < STEPS_PER_FRAME; i++) {
         if (now - lastEnemyGenerationTime > sharedState.generationInterval) {
-            enemiesGenerator.generateEnemy();
+            enemiesGenerator.generateEnemy(player.collider.end.x,player.collider.end.z);
             lastEnemyGenerationTime = now;
         }
         controls(deltaTime, player);
@@ -438,6 +453,7 @@ export function animate(renderer, scene, player, cameraDistance) {
 
     renderer.render(scene, player.camera);
     // stats.update();
+    //console.log(player.collider.end);
 }
 export function pauseGame() {
     isPaused = true;
