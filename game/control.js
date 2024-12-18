@@ -12,7 +12,7 @@ const vector1 = new THREE.Vector3();
 const vector2 = new THREE.Vector3();
 const vector3 = new THREE.Vector3();
 let isPaused = false;
-const SERVER_URL = 'https://bb68-2402-f000-2-d001-844d-9c96-cfac-210e.ngrok-free.app';
+const SERVER_URL = 'https://ff9f-2402-f000-3-6801-7035-2d10-37f-2bf0.ngrok-free.app';
 let energyManager;
 let healthManager;
 
