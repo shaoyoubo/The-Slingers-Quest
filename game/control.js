@@ -12,7 +12,7 @@ const vector1 = new THREE.Vector3();
 const vector2 = new THREE.Vector3();
 const vector3 = new THREE.Vector3();
 let isPaused = false;
-const SERVER_URL = 'https://ff9f-2402-f000-3-6801-7035-2d10-37f-2bf0.ngrok-free.app';
+const SERVER_URL = 'https://cb65-2402-f000-2-d001-f512-36a4-4166-bf64.ngrok-free.app';
 let energyManager;
 let healthManager;
 
@@ -384,10 +384,9 @@ export function teleportPlayerIfOob(player) {
 
 function updateEnemies(deltaTime, player) {
     for (const enemy of enemiesGenerator.enemies) {
-        // console.log(enemiesGenerator.enemyIdx);
-        // console.log(enemy.collider.start);
-        if (Math.random() < 0.001) { // 1% 的概率跳跃
-            enemy.velocity.y += 10; // 设置跳跃的速度
+
+        if (Math.random() < 0.001) { 
+            enemy.velocity.y += 10; 
         }
 
         enemy.collider.center.addScaledVector(enemy.velocity, deltaTime);

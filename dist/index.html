@@ -311,12 +311,12 @@ button:active {
         <div class="character" onclick="selectCharacter('ranger')" data-id="ranger">
           <img src="/assets/p2-DbhgJuhV.png" alt="Ranger">
           <p>Ranger</p>
-        <div class="extra-info">The Ranger runs faster.<br>But throw stones slower.</div>
+        <div class="extra-info">The Ranger runs faster.<br>But has fewer hp and stones.</div>
         </div>
         <div class="character" onclick="selectCharacter('warrior')" data-id="warrior">
           <img src="/assets/p3-DJwImTof.png" alt="Warrior">
           <p>Warrior</p>
-        <div class="extra-info">The Warrior runs slowly.<br>But throw stones faster.</div>
+        <div class="extra-info">The Warrior runs slowly.<br>But has more hp and stones.</div>
         </div>
       </div>
 
@@ -336,17 +336,17 @@ button:active {
         <div class="difficulty" onclick="selectDifficulty('easy')" data-id="easy">
           <img src="/assets/easy-xYJ4LSjY.jpg" alt="Easy">
           <p>Easy</p>
-          <div class="extra-info">Designed for new players.<br>Slimes spawn and move slowly.</div>
+          <div class="extra-info">Designed for new players.<br>Slimes are quite harmless.</div>
         </div>
         <div class="difficulty" onclick="selectDifficulty('medium')" data-id="medium">
           <img src="/assets/medium-DfKGxl-9.jpg" alt="Medium">
           <p>Medium</p>
-          <div class="extra-info">The default Choice.<br>Slimes spawn and move at moderate speed.</div>
+          <div class="extra-info">The default Choice.<br>.</div>
         </div>
         <div class="difficulty" onclick="selectDifficulty('hard')" data-id="hard">
           <img src="/assets/hard-BHXWirHs.jpg" alt="Hard">
 
-          <div class="extra-info">Designed for experienced players.<br>Slimes spawn and move very fast.</div>
+          <div class="extra-info">Designed for experienced players.<br>Slimes are very threatening.</div>
           <p>Hard</p>
         </div>
       </div>
@@ -386,26 +386,24 @@ button:active {
     
 function clearScores() {
   const password = prompt('Please enter the password to clear scores:');
-  if (password === 'sybxwxzhenlihai') {
-    fetch(`${SERVER_URL}/clearScores`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ password })
-    })
-    .then(response => response.text())
-    .then(data => {
-      alert(data);
+  fetch(`${SERVER_URL}/clearScores`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ password })
+  })
+  .then(response => response.text())
+  .then(data => {
+    alert(data);
+    if (data === 'Scores cleared successfully') {
       viewRanking(); // 重新加载排行榜
-    })
-    .catch(error => {
-      console.error('Error clearing scores:', error);
-      alert('Failed to clear scores.');
-    });
-  } else {
-    alert('Incorrect password. Scores not cleared.');
-  }
+    }
+  })
+  .catch(error => {
+    console.error('Error clearing scores:', error);
+    alert('Failed to clear scores.');
+  });
 }
 
 function viewRanking() {
