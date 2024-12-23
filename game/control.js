@@ -153,6 +153,7 @@ export function updateStones(deltaTime, player) {
 }
 function SlimeDeath(position) {
     const audio = new Audio('../Assets/UI/SlimeDeath.mp3'); // Path to your sound file
+    audio.volume = 1.0;
     audio.play(); // Play the sound
 }
 function enemyAndStoneCollisions() {
