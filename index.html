@@ -303,10 +303,10 @@ button:active {
     <div class="modal">
       <h2>Choose Your Character</h2>
       <div id="character-options">
-        <div class="character" onclick="selectCharacter('adventurer')" data-id="adventurer">
-          <img src="./Assets/Characters/p1.png" alt="adventurer">
-          <p>Adventurer</p>
-        <div class="extra-info">The Adventurer.<br>Also the default Choice.</div>
+        <div class="character" onclick="selectCharacter('Knight')" data-id="Knight">
+          <img src="./Assets/Characters/p1.png" alt="Knight">
+          <p>Knight</p>
+        <div class="extra-info">The Knight.<br>Also the default Choice.</div>
         </div>
         <div class="character" onclick="selectCharacter('ranger')" data-id="ranger">
           <img src="./Assets/Characters/p2.png" alt="Ranger">
@@ -382,7 +382,7 @@ button:active {
   </div>
   <audio id="background-music" src="./Assets/Music/bgm.mp3" loop autoplay muted></audio>
   <script>
-    const SERVER_URL = 'https://cb65-2402-f000-2-d001-f512-36a4-4166-bf64.ngrok-free.app';
+    const SERVER_URL = 'https://ecee-2402-f000-3-6801-e0d2-f408-494e-d3a1.ngrok-free.app';
     
 function clearScores() {
   const password = prompt('Please enter the password to clear scores:');

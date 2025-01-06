@@ -60,8 +60,8 @@ if (difficulty === "easy") {
   sharedState.maxhp = 4;
 }
 
-    const character = localStorage.getItem("gameCharacter") || "adventurer";
-    if (character === "adventurer") {
+    const character = localStorage.getItem("gameCharacter") || "Knight";
+    if (character === "Knight") {
       sharedState.loadplace = './Characters/Adventurer1.glb';
       sharedState.playerspeed = 12;
       sharedState.stonecapacity = 5;
