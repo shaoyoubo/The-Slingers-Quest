@@ -8,10 +8,64 @@ The background image of our game was generated with ChatGPT, and the music was c
 
 We also received assistance from Xu Guowei, who took this course last year, in uploading our game online. You can currently view it at [https://acg-project.github.io/](https://acg-project.github.io/). 
 
-Running our demo locally is very easy. You only need to install three.js and run:
 
+
+
+## Steps to Set Up the Game Locally
+
+If you want to set up the environment to run the game on your local machine, you can follow the steps below.
+
+### Step 1: Clone the Repository
+Clone the repository from GitHub using the following command:
 ```bash
-npx vite
+git clone git@github.com:shaoyoubo/The-Slingers-Quest.git
 ```
 
-in this folder.
+### Step 2: Install Dependencies
+Navigate to the project folder and install the necessary dependencies by running:
+```bash
+npm install
+```
+
+### Step 3: Run the Game
+Run the game locally by executing the following command:
+```bash
+npm vite
+```
+The game will be available at [http://localhost:5173/](http://localhost:5173/).
+
+---
+
+### Running the Game with a Database
+
+To run the game with the database, follow these additional steps:
+
+### Step 4: Start the Server
+1. Make sure you have **MongoDB** installed on your machine.  
+2. Start the Express server by running:
+   ```bash
+   node server.js
+   ```
+
+3. Use **ngrok** to expose the local server to the internet. Install ngrok if you don't have it already, and then run:
+   ```bash
+   ngrok http 3000
+   ```
+
+4. Copy the generated ngrok URL and replace the constant variable `SERVER_URL` in the following files:
+   - `index.html`
+   - `control.js`
+
+5. After making the changes, rerun the game:
+   ```bash
+   npm vite
+   ```
+   The game with database functionality will be available at [http://localhost:5173/](http://localhost:5173/).
+
+---
+
+## Notes
+- Make sure all dependencies are installed and your MongoDB server is running for the database functionality to work properly.
+- If you encounter issues with ports, you can configure the port in your Vite or Express server settings.
+
+Enjoy the adventure!😊
